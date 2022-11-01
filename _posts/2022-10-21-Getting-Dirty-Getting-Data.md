@@ -1,10 +1,15 @@
 ---
-layout: post
-title:  "Getting Dirty Getting Data"
+# layout: post
+title:  Getting Dirty Getting Data
+author: 1
 date:   2022-10-21
-author: Sam Spackman
+categories: [API, data extraction]
+tags: [python, r, pandas]
 description: I got my hands a little dirty getting some soil data in preparation for my next project, read on to learn how!
-image: /assets/images/soil_hand.png
+image: 
+    path: /assets/images/soil_hand.png
+    width: 1000
+    height: 400
 ---
 
 August 16, 2008 is a very significant day in my life. To be perfectly candid with you, I can't actually remember everything I did that day. But the fact of the matter is I probably spent that whole day playing in the mud. Maybe I was catching frogs next to a stream, or playing with my Tonka trucks in the big piles of dirt left from neighborhood construction. I’m sure most any kid growing up in the rural midwest has days like that they can look back on fondly; they may not be able to remember all the nitty gritty details of the day’s events, but they can remember the fun they had in the dirt.
