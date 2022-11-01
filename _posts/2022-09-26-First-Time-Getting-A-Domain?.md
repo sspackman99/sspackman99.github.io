@@ -1,8 +1,10 @@
 ---
-layout: post
+#layout: post
 title:  First Time Getting a Domain?
 date:   2022-09-26
 author: <author_id>
+categories: [Setting up a website]
+tags: [google, github pages]
 description: Get your own custom domain in 5 easy steps
 image: /assets/images/tierra-mallorca-rgJ1J8SDEAY-unsplash.png
 ---
@@ -12,7 +14,7 @@ I understand, and I am here to help you get set up with your own custom domain i
 
 ## First, A Heads Up
 
-<img src="https://github.com/sspackman99/stat386-projects/raw/main/assets/images/jana-knorr-d-JNCzsRDFE-unsplash.png" alt="" style="width:1000px;"/>
+<img src="https://github.com/sspackman99/stat386-projects/raw/main/assets/images/jana-knorr-d-JNCzsRDFE-unsplash.png" alt="" style="width:800px;"/>
 
 
 I use Github Pages to host my website. There are certain nuances between web hosting organizations, so to keep everyone interested and happy I will give examples in general terms.
@@ -52,7 +54,9 @@ You can do this by navigating to your DNS provider (in most cases this will be y
 
 To check that you configured the DNS settings correctly, use the command below in your terminal.
 
-`dig WWW.EXAMPLE.COM +nostats +nocomments +nocmd`
+```bash
+dig WWW.EXAMPLE.COM +nostats +nocomments +nocmd
+```
 
 It should reurn a result similar to this.
 
