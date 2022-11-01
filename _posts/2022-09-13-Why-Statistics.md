@@ -1,8 +1,6 @@
 ---
-layout: post
-title:  "Why Statistics?"
+title:  Why Statistics?
 date:   2022-09-13
-author: Sam Spackman
 description: I get asked a lot, "Why stats?" I'm here now to tell you how I got here
 image: /assets/images/for_hire.png
 ---

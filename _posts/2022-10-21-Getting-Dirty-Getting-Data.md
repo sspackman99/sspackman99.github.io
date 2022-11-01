@@ -1,7 +1,6 @@
 ---
 # layout: post
 title:  Getting Dirty Getting Data
-author: 1
 date:   2022-10-21
 categories: [API, Data Extraction]
 tags: [python, r, pandas]
