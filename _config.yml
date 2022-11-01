@@ -23,7 +23,7 @@ timezone: America/Denver
 
 title: Data Science Magic                        # the main title
 
-tagline: Come for the data, stay for the magic ✨   # it will display as the sub-title
+tagline: Come for the data, stay for the magic 🪄   # it will display as the sub-title
 
 description: >-                        # used by seo meta and the atom feed
   A blog for all of Sam's fun projects, especially those concerning data science
@@ -35,7 +35,7 @@ github:
   username: sspackman99             # change to your github username
 
 twitter:
-  username:          # change to your twitter username
+  username:   sam_spack       # change to your twitter username
 
 social:
   # Change to your full name.
@@ -95,8 +95,8 @@ comments:
     shortname:   'datasciencemagic' # fill with the Disqus shortname. › https://help.disqus.com/en/articles/1717111-what-s-a-shortname
   # utterances settings › https://utteranc.es/
   utterances:
-    repo:   sspackman99/sspackman99.github.io      # <gh-username>/<repo>
-    issue_term:  "pathname" # < url | pathname | title | ...>
+    repo:   #sspackman99/sspackman99.github.io      # <gh-username>/<repo>
+    issue_term:  #"pathname" # < url | pathname | title | ...>
   # Giscus options › https://giscus.app
   giscus:
     repo:             # <gh-username>/<repo>
