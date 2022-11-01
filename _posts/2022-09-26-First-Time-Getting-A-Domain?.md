@@ -2,8 +2,7 @@
 #layout: post
 title:  First Time Getting a Domain?
 date:   2022-09-26
-author: <author_id>
-categories: [Setting up a website]
+categories: [website creation]
 tags: [google, github pages]
 description: Get your own custom domain in 5 easy steps
 image: /assets/images/tierra-mallorca-rgJ1J8SDEAY-unsplash.png
