@@ -3,7 +3,7 @@
 title:  Getting Dirty Getting Data
 author: 1
 date:   2022-10-21
-categories: [API, data extraction]
+categories: [API, Data Extraction]
 tags: [python, r, pandas]
 description: I got my hands a little dirty getting some soil data in preparation for my next project, read on to learn how!
 image: 
