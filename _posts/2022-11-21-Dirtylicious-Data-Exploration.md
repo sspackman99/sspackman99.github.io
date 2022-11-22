@@ -1,7 +1,7 @@
 ---
 # layout: post
 title:  Dirtylicious Data Exploration
-date:   2022-10-21
+date:   2022-11-21
 categories: [API, Data Visualization]
 tags: [python, r, pandas, seaborn, iowa, corn, soil]
 description: I got my hands a little dirty getting some soil data and perform an exploratory data analysis
