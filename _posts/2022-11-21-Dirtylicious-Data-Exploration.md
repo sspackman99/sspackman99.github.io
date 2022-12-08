@@ -15,7 +15,7 @@ To explore this concept a little further, in a recent blog post I used a python 
 Most of the data that I have is categorical, with a sprinkling of a few quantitative variables. I will spend most of this time looking at different variables and how they seem to affect the “Iowa Corn Suitability Rating”, a soil metric only used in Iowa to judge (you guessed it) how suitable certain soils are for raising corn. With over 200,000 rows of soil data from all over the state, I’m confident that together we can find something interesting.
 
 ## What County is the Best for Raising Corn?
-Out of 99 counties, it seems that Chester County is, on average, the best for raising corn. I averaged across every county and it looks like with a corn suitability rating of just over 70, Chester County came out on top.
+Out of 99 counties, it seems that Cherokee County is, on average, the best for raising corn. I averaged across every county and it looks like with a corn suitability rating of just over 70, Chester County came out on top.
 
 <img src="https://github.com/sspackman99/sspackman99.github.io/raw/main/assets/images/county.png" alt="" style="width:1000px;"/>
 
