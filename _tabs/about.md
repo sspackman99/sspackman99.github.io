@@ -24,11 +24,11 @@ Rock climbing
 
 and canyoneering
 
-<img src="https://github.com/sspackman99/sspackman99.github.io/raw/main/assets/images/About_pics/canyoneering%20Large.jpeg" alt="" style="width:800px;"/>
+<img src="https://github.com/sspackman99/sspackman99.github.io/raw/main/assets/images/About_pics/canyoneering.jpeg" alt="" style="width:800px;"/>
 
 Or really anything that's outdoors! I also lived in the Visayas region of the Philippines for a couple years, so the Philippines really has my heart.
 
-<img src="https://github.com/sspackman99/sspackman99.github.io/raw/main/assets/images/About_pics/Philippines%20Large.jpeg" alt="" style="width:800px;"/>
+<img src="https://github.com/sspackman99/sspackman99.github.io/raw/main/assets/images/About_pics/Philippines.jpeg" alt="" style="width:800px;"/>
 
 ### That's why I started this blog
 
