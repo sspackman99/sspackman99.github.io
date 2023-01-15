@@ -10,7 +10,11 @@ comments: false
 
 # About Me
 
-My name is Sam Spackman and I am finishing the last year of my undergraduate degree at Brigham Young University studying statistics. I am a *total* data nerd, I'm always smiling and laughing, and I'm probably too loud for my own good.
+My name is Sam Spackman and I am finishing the last year of my undergraduate degree at Brigham Young University in Utah studying statistics and preparing to enter graduate school. 
+
+<img src="https://github.com/sspackman99/stat386-projects/raw/main/assets/images/google_domains.png" alt="" style="width:800px;"/>
+
+I am a *total* data nerd, I'm always smiling and laughing, and I'm probably too loud for my own good.
 
 ### That's why I started this blog
 
