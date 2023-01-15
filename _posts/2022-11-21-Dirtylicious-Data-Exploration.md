@@ -7,7 +7,7 @@ tags: [python, r, pandas, seaborn, iowa, corn, soil]
 description: I got my hands a little dirty getting some soil data and perform an exploratory data analysis
 ---
 # Welcome to Some Dirty Data
-What could possibly set Iowa apart from other states to help it grow so much corn? A mystery to some, a trade secret to others; regardless of what you want to call it I believe it all has to do with the soil.
+What could possibly set Iowa apart from other states that helps it grow so much corn? A mystery to some, a trade secret to others; regardless of what you want to call it I believe it all has to do with the soil.
 
 To explore this concept a little further, in a recent blog post I used a python script and downright nasty SQL query to retrieve soil data from the Web Soil Survey. In this post I’ll explore the data a little further with some simple graphs and we can see together what the soil has to tell us about Iowa’s most iconic crop.
 
