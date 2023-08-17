@@ -45,21 +45,21 @@ Let's say that you are a sales leader at a large tech company. You want to bring
 
 Let's say that every sales rep brings in about $150k a year for your company. We can represent this mathematically as a function of revenue like this:
 
-$r(x) = 150x$
+$$r(x) = 150x$$
 
 (Remember, we're doing the math in the thousands)
 
 However, after discussing things with your operations team it looks like the costs for your company (paying for sales reps to travel to meet with potential customers, facilities costs, salaries, etc.) can also be represented like this:
 
-$c(x) = x^3-500x^2 + 10x$
+$$c(x) = x^3-500x^2 + 10x$$
 
 We also know that profits are just the revenue minus the costs. This can now be represented as just a combination of the two functions above:
 
-$p(x) = 150x - x^3+500x^2 - 10x$
+$$p(x) = 150x - x^3+500x^2 - 10x$$
 
 We can simplify it to look like this instead:
 
-$p(x) = - x^3+500x^2 + 140x$
+$$p(x) = - x^3+500x^2 + 140x$$
 
 That's quite the doozy. With calculus things can become a little easier though. We know that the derivative of a function can essentially be understood as the instantaneous rate of change (or slope) at any given point on that function. In our situation, that would represent the change in profits as the number of sales reps changes. A positive slope would mean that as the number of sales reps goes up, profit also increases. A negative slope means that as the number of sales reps goes up, profits decrease.
 
@@ -75,31 +75,31 @@ Let's try this out with our sample problem above.
 
 We'll start by take the derivative of the function above.
 
-$p'(x) = - 3x^2+1000x + 140$
+$$p'(x) = - 3x^2+1000x + 140$$
 
 Now we need to find where $p'(x)$ = 0.
 
-$- 3x^2+1000x + 140 = 0$
+$$- 3x^2+1000x + 140 = 0$$
 
 Let's solve this through using the quadratic formula.
 
-$x = \frac{-1000 \pm \sqrt{1000^2 -4*-3*140}}{-6}$
+$$x = \frac{-1000 \pm \sqrt{1000^2 -4*-3*140}}{-6}$$
 
-$x = \frac{-1000 \pm \sqrt{1000000 - (-1680)}}{-6}$
+$$x = \frac{-1000 \pm \sqrt{1000000 - (-1680)}}{-6}$$
 
-$x = \frac{-1000 \pm \sqrt{1001680}}{-6}$
+$$x = \frac{-1000 \pm \sqrt{1001680}}{-6}$$
 
 This leaves us with only two possible answers, $x$ = -.14 and $x$ = 333.47. Logic informs us that we can't have a negative number of sales reps so the only number we're interested in at this point is 333. However, our work is not yet done. We don't know yet whether this is a maximum or minimum. To figure this out, we need to use the 2nd Derivative Test. This is essentially where we look at how the derivative changes throughout the function to decide whether the slope is increasing or decreasing.
 
 So let's take the second derivative of our function now.
 
-$p'(x) = - 3x^2+1000x + 140$
+$$p'(x) = - 3x^2+1000x + 140$$
 
-$p''(x) = - 6x+1000$
+$$p''(x) = - 6x+1000$$
 
 We now check whether the second derivative is positive or negative at 333 (we can't employ .47 of a person so we'll just go with 333).
 
-$- 6(333)+1000 = ?$
+$$- 6(333)+1000 = ?$$
 
 Without even finishing the calculation we can see that the 2nd derivative is negative. This means that the function at that point is peaking, and we have found a maximum.
 
@@ -123,7 +123,7 @@ I'll just give a few examples of common machine learning models and their cost f
 
 The cost function used in linear regression is the "Mean Squared Error" (MSE) function.
 
-$J(\theta) = \frac{N}{2} *\sum(\text{Predicted - Actual})^2$
+$$ J(\theta) = \frac{N}{2} \cdot \sum (\text{Predicted} - \text{Actual})^2 $$
 
 We predict the output with our model, subtract the actual output, square it, and average over all instances. In simple terms, the MSE is the average squared difference between our predictions and the actual values. We want to minimize this.
 
@@ -131,7 +131,7 @@ We predict the output with our model, subtract the actual output, square it, and
 
 In logistic regression we use the "Log-Loss" function.
 
-$J(\theta) = -\frac{1}{N} *\sum[\text{Actual}*log(\text{Predicted}) + (1 - \text{Actual}) * log(1-\text{Predicted}]$
+$$ J(\theta) = -\frac{1}{N} \sum \left( \text{Actual} \cdot \log(\text{Predicted}) + (1 - \text{Actual}) \cdot \log(1-\text{Predicted}) \right) $$
 
 Here, we're essentially measuring how far our predictions are from the actual values in terms of probability. The cost is very high for confident wrong predictions, while its less for right predictions.
 
@@ -139,7 +139,7 @@ Here, we're essentially measuring how far our predictions are from the actual va
 
 SVMs typically use a Hinge Loss function.
 
-$J(\theta) = [\frac{1}{N} *\sum max(0, 1 - \text{Actual} * \text{Predicted})] + \lambda\|w\|^2$
+$$ J(\theta) = \frac{1}{N} \sum \max(0, 1 - \text{Actual} \cdot \text{Predicted}) + \lambda|w|^2 $$
 
 > SVMs have a notoriously difficult cost function to understand, so don't worry about it if it confuses you the first time. The goal of this is mainly to demonstrate how each of these common machine learning models have similar underpinnings, since each works based on a cost function.
 {: .prompt-warning }
