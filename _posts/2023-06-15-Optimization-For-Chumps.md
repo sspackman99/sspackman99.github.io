@@ -148,4 +148,4 @@ You'll notice how the last portion of the Hinge Loss function has a regularizati
 
 ## Conclusion
 
-You have seen now what optimization means and how you see it in every day life. You understand it a little better from a mathematical standpoint, and you've worked through a simple example. You now understand how optimization impacts the statistical and machine learning worlds, and you understand how optimization is used in specific machine learning models. Now go and practice optimizing a cost function in your own life and let me know how it goes in the comments below!
+You have seen now what optimization means and how you see it in every day life. You understand it a little better from a mathematical standpoint, and you've worked through a simple example. You now understand how optimization impacts the statistical and machine learning worlds, and you understand how optimization is used in specific machine learning models. Now go and practice optimizing a cost function in your own life and let me know how everything goes in the comments below!
