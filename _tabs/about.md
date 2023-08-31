@@ -6,10 +6,6 @@ toc: false
 comments: false
 ---
 
-
-
-# About Me
-
 My name is Sam Spackman and I am an absolute data science junkie.
 
 <img src="https://github.com/sspackman99/sspackman99.github.io/raw/main/assets/images/About_pics/Self.jpeg" alt="" style="width:800px;"/>
