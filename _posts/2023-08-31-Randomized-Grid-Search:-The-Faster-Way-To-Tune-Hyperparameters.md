@@ -1,6 +1,6 @@
 ---
 # layout: post
-title:  Randomized Grid Search: The Faster Way to Tune Hyperparameters
+title:  Randomized Grid Search-- The Faster Way to Tune Hyperparameters
 date:   2023-08-31
 categories: [Machine Learning]
 tags: [python, scikit-learn]
