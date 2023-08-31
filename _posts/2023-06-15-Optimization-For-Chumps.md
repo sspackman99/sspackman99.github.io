@@ -19,9 +19,9 @@ Put simply, optimization is the maximizing or minimizing of something. It has be
 
 So what does optimization have to do with data science? Much of the modeling associated with data science is built off of the idea of optimization. Almost all machine learning problems are just optimization problems, under the hood. Fancy statistical multiple linear regression models just use optimization techiniques to draw the right line. If data scientists can really understand the idea behind optimization then they can choose the right model to use in the right circumstances to get the best results.
 
-<img src="https://github.com/sspackman99/sspackman99.github.io/raw/main/assets/images/math Medium.jpeg" alt="" style="width:800px;"/>
-
 ## Simple Mathematical Introduction
+
+<img src="https://github.com/sspackman99/sspackman99.github.io/raw/main/assets/images/math Medium.jpeg" alt="" style="width:800px;"/>
 
 Let's dive right in then. I'll start with a simple example just to get the ball rolling and then later kick it up a notch.
 
@@ -107,9 +107,9 @@ Without even finishing the calculation we can see that the 2nd derivative is neg
 
 Calculus and optimization just found us the number of sales reps our fake tech company needs to employ to bring us the most profit.
 
-<img src="https://github.com/sspackman99/sspackman99.github.io/raw/main/assets/images/statistics Medium.jpeg" alt="" style="width:800px;"/>
-
 ## Implications in a Statistical Context
+
+<img src="https://github.com/sspackman99/sspackman99.github.io/raw/main/assets/images/statistics Medium.jpeg" alt="" style="width:800px;"/>
 
 Optimization like this has a strong application in a statistical context. Two terms that you often hear in statistics are "least-squares" and "maximum likelihood". These are two different names for methods used to fit models to data. Least-squares fits a model to data by minimizing the squared differences between a model's predictions and the observed data. In a more concrete sense, it tries to find the line (or curve, for more complex models) that best fits your data according to the criterion of minimizing the total "distance" between your data points and the model's predicted points.
 
