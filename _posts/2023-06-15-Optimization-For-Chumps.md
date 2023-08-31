@@ -9,6 +9,8 @@ description: This is a simple introduction to the optimization theory behind muc
 ---
 # Optimization for Chumps
 
+<img src="https://github.com/sspackman99/sspackman99.github.io/raw/main/assets/images/optimization.jpeg" alt="" style="width:800px;"/>
+
 ## What is Optimization
 
 Optimization is something that you perform every day. GPS systems try to optimize your drive so that you get there faster. When you haggle the price of something, you are trying to optimize the transaction so you get the most value for the least amount of money. Every time you try to "work harder, not smarter", you are optimizing your work.
@@ -18,6 +20,8 @@ Put simply, optimization is the maximizing or minimizing of something. It has be
 ## Why Optimization in Data Science
 
 So what does optimization have to do with data science? Much of the modeling associated with data science is built off of the idea of optimization. Almost all machine learning problems are just optimization problems, under the hood. Fancy statistical multiple linear regression models just use optimization techiniques to draw the right line. If data scientists can really understand the idea behind optimization then they can choose the right model to use in the right circumstances to get the best results.
+
+<img src="https://github.com/sspackman99/sspackman99.github.io/raw/main/assets/images/math medium.jpeg" alt="" style="width:800px;"/>
 
 ## Simple Mathematical Introduction
 
@@ -104,6 +108,8 @@ $$- 6(333)+1000 = ?$$
 Without even finishing the calculation we can see that the 2nd derivative is negative. This means that the function at that point is peaking, and we have found a maximum.
 
 Calculus and optimization just found us the number of sales reps our fake tech company needs to employ to bring us the most profit.
+
+<img src="https://github.com/sspackman99/sspackman99.github.io/raw/main/assets/images/statistics medium.jpeg" alt="" style="width:800px;"/>
 
 ## Implications in a Statistical Context
 
