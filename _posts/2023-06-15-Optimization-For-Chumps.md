@@ -7,8 +7,6 @@ categories: [Data Science Theory]
 tags: [Basics, Math]
 description: This is a simple introduction to the optimization theory behind much of data science and modeling. 
 ---
-# Optimization for Chumps
-
 <img src="https://github.com/sspackman99/sspackman99.github.io/raw/main/assets/images/optimization.jpeg" alt="" style="width:800px;"/>
 
 ## What is Optimization
