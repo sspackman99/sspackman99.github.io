@@ -145,7 +145,8 @@ SVMs typically use a Hinge Loss function.
 
 $$ J(\theta) = \frac{1}{N} \sum \max(0, 1 - \text{Actual} \cdot \text{Predicted}) + \lambda|w|^2 $$
 
-> SVMs have a notoriously difficult cost function to understand, so don't worry about it if it confuses you the first time. The goal of this is mainly to demonstrate how each of these common machine learning models have similar underpinnings, since each works based on a cost function. {: .prompt-{warning} }
+> SVMs have a notoriously difficult cost function to understand, so don't worry about it if it confuses you the first time. The goal of this is mainly to demonstrate how each of these common machine learning models have similar underpinnings, since each works based on a cost function.
+{: .prompt .prompt-warning }
 
 Anyways, the first part of this formula measures the "misclassification margin" - amount and severity by which our prediction was wrong. The second part is a regularization term that tries to keep the model simple to prevent overfitting. Here, $w$ is the weights vector, $\|w\|^2$ is the square of the magnitude of the weights vector, and $\lambda$ is a regularization parameter. SVMs try to find a decision boundary that maximizes the margin from both classes, and the hinge loss function allows it to ignore errors as long as they fall within the margin space.
 
