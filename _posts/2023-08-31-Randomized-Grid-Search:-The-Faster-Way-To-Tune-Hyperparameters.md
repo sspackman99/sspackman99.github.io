@@ -7,6 +7,8 @@ tags: [python, scikit-learn]
 description: Ever frusterated with how long it takes to tune hyperparameters for your machine learning model? Try scikit-learn's randomized grid search!
 ---
 
+<img src="https://github.com/sspackman99/sspackman99.github.io/raw/main/assets/images/runner.jpeg" alt="" style="width:800px;"/>
+
 ## Hyperparameters and How to Find Them
 
 The goal of training a machine learning model is to develop a model that can accurately predict an outcome by learning the relationships between the variables in the data. When training a model, a machine learning engineer starts with a very generalized model framework and from there tries to shape it into something specific to the problem at hand. They do this by training the model on relevant data, but that training process is dictated by what are called "hyperparameters". A hyperparameter could be something as simple as the number of times cross-validation is run, or the type of regularization parameter used. Finding the best hyperparameters for the most accurate model can be a time-consuming and challenging task. If you want to learn more about what hyperparameters are specifically, check out [this page from AWS on hyperparameters](https://aws.amazon.com/what-is/hyperparameter-tuning/).
@@ -18,6 +20,8 @@ A faster alternative to grid search CV is randomized grid search CV.
 In this blog post, I will introduce randomized grid search CV and show you how to use it in Python. I will also provide an example that shows how much faster randomized grid search CV is than regular grid search.
 
 ## Randomized Grid Search
+
+<img src="https://github.com/sspackman99/sspackman99.github.io/raw/main/assets/images/random.jpeg" alt="" style="width:800px;"/>
 
 Randomized grid search CV is a faster alternative to grid search CV. It works by randomly sampling a subset of given possible hyperparameter combinations, then evaluating each combination on a hold-out set of data. The hyperparameter combination that produces the best performance on the hold-out set is selected as the best hyperparameters.
 
