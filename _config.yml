@@ -23,10 +23,10 @@ timezone: America/Denver
 
 title: Data Science Magic                        # the main title
 
-tagline: Come for the data, stay for the magic 🪄   # it will display as the sub-title
+tagline: Come for the science, stay for the magic 🪄   # it will display as the sub-title
 
 description: >-                        # used by seo meta and the atom feed
-  A blog for all of Sam's fun projects, especially those concerning data science
+  Your one-stop magic shop for all things data science
 
 # fill in the protocol & hostname for your site, e.g., 'https://username.github.io'
 url: 'https://www.datasciencemagic.org/'
