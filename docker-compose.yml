@@ -1,0 +1,28 @@
+version: '3.7'
+
+services:
+  blog:
+    image: datasciencemagic:latest
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.datasciencemagic.rule=Host(`datasciencemagic.org`)"
+      - "traefik.http.routers.datasciencemagic.entrypoints=https"
+      - "traefik.http.services.datasciencemagic.loadbalancer.server.port=80"
+      # - "traefik.http.middlewares.default-headers.headers.frameDeny=true"
+      # - "traefik.http.middlewares.default-headers.headers.browserXssFilter=true"
+      # - "traefik.http.middlewares.default-headers.headers.contentTypeNosniff=true"
+      # - "traefik.http.middlewares.default-headers.headers.forceSTSHeader=true"
+      # - "traefik.http.middlewares.default-headers.headers.stsIncludeSubdomains=true"
+      # - "traefik.http.middlewares.default-headers.headers.stsPreload=true"
+      # - "traefik.http.middlewares.default-headers.headers.stsSeconds=15552000"
+      # - "traefik.http.middlewares.default-headers.headers.customFrameOptionsValue=SAMEORIGIN"
+      # - "traefik.http.middlewares.default-headers.headers.customRequestHeaders.X-Forwarded-Proto=https"
+    networks:
+      - proxy
+    ports:
+      - "80:80"
+      - "443:443"
+
+networks:
+  proxy:
+    external: true
