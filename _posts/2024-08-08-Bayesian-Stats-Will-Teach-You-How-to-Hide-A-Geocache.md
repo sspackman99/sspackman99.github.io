@@ -8,7 +8,7 @@ tags: [r, Math, Bayes]
 description: This is an example of a project that I worked on using Bayesian statistics
 ---
 
-# What is a Geocache?
+## What is a Geocache?
 
 You may have heard about Bayesian statistics, but have you heard of Geocaching? In this post I’ll explain to you how my friend Drew Millane and I designed a Bayesian model to explore what kind of geocache will get you the most favorite points, but first I need to explain to you what a geocache is.
 
