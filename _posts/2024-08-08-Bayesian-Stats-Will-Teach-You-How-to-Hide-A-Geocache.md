@@ -5,6 +5,7 @@ title:  Bayesian Stats Will Teach You How to Hide a Geocache
 date:   2024-08-08
 categories: [Machine Learning]
 tags: [r, Math, Bayes]
+toc: true
 description: This is an example of a project that I worked on using Bayesian statistics
 ---
 
