@@ -20,15 +20,15 @@ No two geocaches are the same. Some are placed in difficult-to-reach places (see
 
 *Above is an example of a geocache page. This cache has a Terrain and Difficulty rating of 2, is size “Other”, and has received 48 favorites at the time of posting*
 
-# What makes a cache popular?
+## What makes a cache popular?
 
 Now with a bit of background info, the next logical question to ask is “What makes a geocache popular”? Fantastic question. Obviously if you are going to spend the effort to hide a cache you would like it to be found and for other geocachers to enjoy it. Drew and I decided to train a Bayesian model on some geocaching data to find an answer to that question.
 
-# The data
+## The data
 
 Our model was trained on data from 144,000 geocaches from the states of Utah and California. We used the Difficulty, Terrain, and number of Favorites.
 
-# Our model
+## Our model
 
 I may spend more time on another post explaining more about Bayesian statistics but for now I’ll explain our model as if you already have a base level understanding of how to build a Bayesian model.
 
@@ -53,7 +53,7 @@ $$ \text{Prior: c = 5, d = 1, e = 1, f = 1 }$$
 
 For fun, we used a PPL for sampling and then we also wrote out our own sampler by hand. We used Stan for a PPL. Using a PPL made setting up our Bayesian model very simple, it abstracted away a lot of the complex math for us. However, in terms of computational time it was much slower than our by-hand sampler. Our by-hand sampler only took about 55 seconds to run whereas Stan took around 442 seconds to run each time. Just another example of how being a math ninja can pay off. ;)
 
-# By-hand analysis
+## By-hand analysis
 
 We decided we would use a slice sampling method (If you want a post dedicated to the intricacies of slice sampling itself, shoot me an email), so to do that we had to write out our complete joint posterior density and from there derive the full conditionals of $\lambda$, $\alpha$, and $\beta$ for each group. 
 
@@ -77,7 +77,7 @@ We then used the following algorithm to actually get draws from our distribution
      2. Slice Sample the full conditional of $\alpha$
      3. Slice Sample the full conditional of $\lambda$
 
-# Diagnostic plots
+## Diagnostic plots
 
 Now to verify that our PPL worked well we looked at some diagnostic plots. Below are just some example trace plots to make sure our model was really exploring the space well. Because they look nice and thick and not thin and wiry we know that the PPL was effective. 
 
@@ -99,7 +99,7 @@ Now to verify that our PPL worked well we looked at some diagnostic plots. Below
 
 Around 9000 samples for each group is fantastic, so we really weren’t worried.
 
-# Comparing our samplers
+## Comparing our samplers
 
 Now we definitely trust our Stan sampler, so we wanted to compare between Stan and our by-hand sampler to see if they were giving us the same results. We did this to see if our results were within Monte Carlo error of each other. To do this we took samples from both samplers and by taking the differences between the two we were able to create confidence intervals. Each of these intervals below contain zero so we know that both of our samplers were giving us the same results.
 
@@ -131,7 +131,7 @@ Now we definitely trust our Stan sampler, so we wanted to compare between Stan a
 | 4.5           | -0.0006     | 0.0023      |
 | 5             | -0.0024     | 0.0010      |
 
-# Sensitivity of priors
+## Sensitivity of priors
 
 You may have noticed my justification of the priors that we used earlier to be a little less than satisfactory. I don’t disagree, but just to be safe we tested how sensitive our model is to using different priors (spoiler alert: our model used so much data it didn’t even matter what our prior was). 
 
@@ -149,7 +149,7 @@ To do this we tried using our model but with a crazy strong prior with c = 1000,
 | 0.0166      | 0.0195      |
 | 0.0148      | 0.0182      |
 
-# So, what kind of geocache is the best?
+## So, what kind of geocache is the best?
 
 Below are density plots of the mean number of favorites for each group of Difficulty and Terrain. On both graphs, the two extremes of Difficulty and Terrain (highest and lowest ratings) have the most favorites. It’s also interesting to note that the distribution of each group almost never overlaps with the distributions of other groups, which implies that the Difficulty and Terrain rating of each geocache really does impact the number of favorites that each cache receives.
 
@@ -162,7 +162,7 @@ Below are density plots of the mean number of favorites for each group of Diffic
 
 **Densities of mean number of favorites by Terrain rating**
 
-# Frequentist analysis
+## Frequentist analysis
 
 Just for fun because this was a Bayesian project, we also performed a Frequentist analysis in the form of just finding the MLE for each group. The Frequentist analysis closely mirrors the results of our Bayesian analysis, which we think is just a result of us having so much data. The nice things about the Bayesian analysis though, and the reason we chose to do it, is because of the nice Bayesian interpretations that come along with it. 
 
@@ -178,7 +178,7 @@ Just for fun because this was a Bayesian project, we also performed a Frequentis
 | 4.5              | 8.0938         | 8.4289         | 8.2625      |
 | 5                | 10.2651        | 10.6396        | 10.4520     |
 
-# Conclusion
+## Conclusion
 
 So in conclusion, if you are just dying to go and hide a geocache and get the most favorites from it, make sure to hide either a really easy cache or a really hard one. Drew and I talked about it, and we thought that maybe geocachers really liked the extremes because a lot of them are trying to keep daily caching streaks and the easy caches are great for that, or they are looking for a crazy adventure and the really hard geocaches are great for that. Who knows? If you have another hypothesis shoot me an email and let me know. Either way it is clear that the caches with the highest and lowest Terrain and Difficulty ratings receive the most favorites.
 
