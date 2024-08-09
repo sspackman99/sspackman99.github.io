@@ -5,7 +5,6 @@ title:  Optimization for Chumps
 date:   2023-06-15
 categories: [Data Science Theory]
 tags: [Basics, Math]
-toc: false
 description: This is a simple introduction to the optimization theory behind much of data science and modeling. 
 ---
 <img src="https://github.com/sspackman99/sspackman99.github.io/raw/main/assets/images/optimization.jpeg" alt="" style="width:800px;"/>
