@@ -48,5 +48,11 @@ BERTopic is a topic modeling technique that uses a modular design, meaning you c
 
 ## Results
 
-Along with the algorithm, the BERTopic package also includes neat custom Plotly plots that demonstrate the results. That's what I use for the plots below.
+Along with the algorithm, the BERTopic package also includes neat custom Plotly plots that demonstrate the results. That's what I use for the plots below. This first plot used HDBSCAN as the clustering method. HDBSCAN is a unique clustering method in that you do not have to specify beforehand the number of clusters you think there are, it finds the optimal number for you. In this case, HDBSCAN found 94 different topics/clusters.
+
+*Also as a note, because there are so many topics the graph can become rather busy. I find that double-clicking on the legend unselects all of the topics, then you can single-click on the topics that you want to display*
+
+The largest cluster is a cluster of just hyperlinks. It looks like it is not uncommon at all for Trump to tweet out links to his followers. The second largest topic is Trump sending out thank yous and encouragment while on the campaign trail. The third most common topic is about Joe Biden, and so on. 
+
+<iframe src="/assets/plots/bertopic_visualize_documents_plot.html" width="100%" height="800px"></iframe>
 
