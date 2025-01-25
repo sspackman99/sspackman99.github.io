@@ -8,6 +8,8 @@ tags: [AI, Natural Language Processing, Transformer]
 description: In this project I use transformer models to analyze tweets
 ---
 
+<img src="/assets/images/transformer_tweets/twitter_x.png" alt="" style="width:800px;"/>
+
 ## Topic Modeling
 
 Internet forums such as Reddit, X (formerly known as Twitter), Bluesky, and others have exploded in popularity since the rise of social media and widespread adoption of smartphones. These forums serve as important spaces for society to discuss a variety of topics, from sports to politics. What if we wanted to analyze what discussions are happening, and how those discussions change over time? 
@@ -48,11 +50,20 @@ BERTopic is a topic modeling technique that uses a modular design, meaning you c
 
 ## Results
 
-Along with the algorithm, the BERTopic package also includes neat custom Plotly plots that demonstrate the results. That's what I use for the plots below. This first plot used HDBSCAN as the clustering method. HDBSCAN is a unique clustering method in that you do not have to specify beforehand the number of clusters you think there are, it finds the optimal number for you. In this case, HDBSCAN found 94 different topics/clusters.
+Along with the algorithm, the BERTopic package also includes neat custom Plotly plots that demonstrate the results. That's what I use for the plots below. This first plot used HDBSCAN as the clustering method on a subset of the data (5000 randomly selected tweets). HDBSCAN is a unique clustering method in that you do not have to specify beforehand the number of clusters you think there are, it finds the optimal number for you. In this case, HDBSCAN found 72 different topics/clusters.
 
-*Also as a note, because there are so many topics the graph can become rather busy. I find that double-clicking on the legend unselects all of the topics, then you can single-click on the topics that you want to display*
+> Also as a note, because there are so many topics the graph can become rather busy. I find that double-clicking on the legend unselects all of the topics, then you can single-click on the topics that you want to display. That does also mean this could be rather difficult on mobile. 
+{: .prompt-tip}
 
-The largest cluster is a cluster of just hyperlinks. It looks like it is not uncommon at all for Trump to tweet out links to his followers. The second largest topic is Trump sending out thank yous and encouragment while on the campaign trail. The third most common topic is about Joe Biden, and so on. 
+The largest cluster is a cluster of just hyperlinks. It looks like it is not uncommon at all for Trump to tweet out links to his followers. The second largest topic is Trump sending out thank yous and encouragment while on the campaign trail. The third most common topic is general thank yous, the fourth looks like they are tweets about entreprenuership, and the fifth looks like it is people tweeting at Trump to run for president. The rest of the tweets capture interesting political topics, everything from tariffs and China to tax cuts. What makes this plot interesting is that it places the clusters of tweets in 2D space based on how similar the topics are. That's why the topics that are mostly hyperlinks or just the words "thank you" are far apart in space from the other topics. 
 
-<iframe src="/assets/plots/bertopic_visualize_documents_plot.html" width="100%" height="800px"></iframe>
+<iframe src="/assets/plots/HDBSCAN_visualize_documents.html" width="100%" height="800px"></iframe>
+
+I also recreated this same graph using two other clustering methods, KMeans and agglomerative clustering using Ward's linkage.
+
+<iframe src="/assets/plots/kmeans_documents.html" width="100%" height="800px"></iframe>
+
+<iframe src="/assets/plots/ward_linkage_documents.html" width="100%" height="800px"></iframe>
+
+
 
