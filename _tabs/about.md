@@ -8,7 +8,7 @@ comments: false
 
 My name is Sam Spackman and I am an absolute data science junkie.
 
-<img src="https://github.com/sspackman99/sspackman99.github.io/raw/main/assets/images/About_pics/Self.jpeg" alt="" style="width:800px;"/>
+<img src="/assets/images/About_pics/Sam Headshot.jpg" alt="" style="width:800px;"/>
 
 I am a *total* data nerd. I love to discuss with people how they can improve their own data science workflows, gain insights from their data that they didn't realize they could learn, or just blab about the field in general.
 
