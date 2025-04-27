@@ -59,11 +59,15 @@ The largest cluster is a cluster of just hyperlinks. It looks like it is not unc
 
 <iframe src="/assets/plots/HDBSCAN_visualize_documents.html" width="100%" height="800px"></iframe>
 
-I also recreated this same graph using two other clustering methods, KMeans and agglomerative clustering using Ward's linkage.
+I also recreated this same graph using two other clustering methods, KMeans and agglomerative clustering using Ward's linkage. What is interesting to see here is the lines that these clustering methods draw across the tweets, where HDBSCAN does not draw those lines. With clustering and unsupervised learning in general, there is no "correct" answer. The idea is to simply let the model introduce new ideas and identify patterns in the data.
 
 <iframe src="/assets/plots/kmeans_documents.html" width="100%" height="800px"></iframe>
 
 <iframe src="/assets/plots/ward_linkage_documents.html" width="100%" height="800px"></iframe>
 
+Overall, this project showed how transformer-based models like BERT, combined with clustering techniques, can uncover meaningful structure in large, messy datasets like Twitter. Even without human labeling, these models can find themes ranging from campaign slogans to major political issues.
 
+In the future, I think the next step would be to try topic modeling with a generative model and compare that against BERTopic, or even attempt temporal analysis: how did topics change over time? Did sentiment within topics shift? Investigating these patterns could provide deeper insights into how public conversation and opinion evolve across key political moments.
+
+As transformer models continue to improve, the ability to map and understand digital discourse at scale will only become more powerful — offering new ways to study everything from political communication to cultural trends.
 
