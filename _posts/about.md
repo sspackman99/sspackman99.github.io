@@ -18,7 +18,7 @@ I am a *total* data nerd. I love discussing how to enhance data science workflow
 
 ### Bringing Data Science to Life
 
-With a Master's in Statistics from Brigham Young University and years of experience at Swire Coca-Cola and Qualtrics, I've curated extensive datasets, developed predictive models, and streamlined operations using technologies like PySpark, AWS Sagemaker, and Hugging Face Transformers. My projects include leveraging Bayesian statistics for geocaching strategies, using LLMs to extract insights from medical records and tweets, and more.
+With a Master's in Statistics from Brigham Young University and years of experience at Wellmark Blue Cross and Blue Shield, Swire Coca-Cola and Qualtrics, I've curated extensive datasets, developed predictive models, and streamlined operations using technologies like PySpark, AWS Sagemaker, and Hugging Face Transformers. My projects include leveraging Bayesian statistics for geocaching strategies, using LLMs to extract insights from medical records and tweets, and more.
 
 ### Be prepared for magic
 
