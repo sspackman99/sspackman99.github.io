@@ -12,15 +12,15 @@ rsync -avz --delete \
   --include="resume.md" \
   --include="????-??-??-*.md" \
   --exclude="*" \
-  _posts/ sam@10.73.1.123:/home/sam/blog_data/posts/
+  _posts/ sam@10.77.1.123:/home/sam/blog_data/posts/
 
 # Stop any running Ollama models before rebuilding the database
 echo "Stopping any running Ollama models..."
-ssh sam@10.73.1.123 "ollama ps | awk 'NR>1 {print \$1}' | xargs -I {} sh -c 'echo \"Stopping {}\"; ollama stop {}'"
+ssh sam@10.77.1.123 "ollama ps | awk 'NR>1 {print \$1}' | xargs -I {} sh -c 'echo \"Stopping {}\"; ollama stop {}'"
 
 # Trigger database rebuild using conda run
 echo "Rebuilding RAG database..."
-ssh sam@10.73.1.123 "cd /home/sam/blog_data && /home/sam/miniconda3/bin/conda run -n rag python populate_database.py"
+ssh sam@10.77.1.123 "cd /home/sam/blog_data && /home/sam/miniconda3/bin/conda run -n rag python populate_database.py"
 
 # Build and deploy Docker container
 echo "Building Docker container..."
