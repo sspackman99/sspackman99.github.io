@@ -57,7 +57,7 @@ Along with the algorithm, the BERTopic package also includes neat custom Plotly 
 
 The largest cluster is a cluster of just hyperlinks. It looks like it is not uncommon at all for Trump to tweet out links to his followers. The second largest topic is Trump sending out thank yous and encouragment while on the campaign trail. The third most common topic is general thank yous, the fourth looks like they are tweets about entreprenuership, and the fifth looks like it is people tweeting at Trump to run for president. The rest of the tweets capture interesting political topics, everything from tariffs and China to tax cuts. What makes this plot interesting is that it places the clusters of tweets in 2D space based on how similar the topics are. That's why the topics that are mostly hyperlinks or just the words "thank you" are far apart in space from the other topics. 
 
-<!-- <iframe src="/assets/plots/HDBSCAN_visualize_documents.html" width="100%" height="800px"></iframe> -->
+<iframe src="/assets/plots/HDBSCAN_visualize_documents.html" width="100%" height="800px"></iframe>
 
 I also recreated this same graph using two other clustering methods, KMeans and agglomerative clustering using Ward's linkage. What is interesting to see here is the lines that these clustering methods draw across the tweets, where HDBSCAN does not draw those lines. With clustering and unsupervised learning in general, there is no "correct" answer. The idea is to simply let the model introduce new ideas and identify patterns in the data.
 
