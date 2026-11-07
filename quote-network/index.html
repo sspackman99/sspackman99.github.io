@@ -311,10 +311,12 @@ const H = () => graphwrap.clientHeight || 640;
 
 function anchorFor(corpus, w, h){
   const spots = {
-    bom: [w*0.30, h*0.46],
+    bom: [w*0.22, h*0.42],
+    ot:  [w*0.55, h*0.30],
+    nt:  [w*0.78, h*0.60],
+    dc:  [w*0.38, h*0.84],
+    pgp: [w*0.62, h*0.86],
     kjv: [w*0.72, h*0.46],
-    dc:  [w*0.40, h*0.82],
-    pgp: [w*0.62, h*0.82],
   };
   return spots[corpus] || [w*0.5, h*0.5];
 }
