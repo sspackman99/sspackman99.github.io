@@ -29,7 +29,7 @@ description: >-                        # used by seo meta and the atom feed
   Your one-stop magic shop for all things data science
 
 # fill in the protocol & hostname for your site, e.g., 'https://username.github.io'
-url: 'https://www.datasciencemagic.org/'
+url: 'https://datasciencemagic.com'
 
 github:
   username: sspackman99             # change to your github username
