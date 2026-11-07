@@ -32,6 +32,10 @@
             border-bottom:1px solid var(--line);background:var(--panel)}
   .sheet-head{display:none}
   .sheet-backdrop{display:none}
+  .grabber{display:none;position:absolute;top:6px;left:50%;transform:translateX(-50%);
+           width:38px;height:4px;border-radius:2px;background:#d6d6d0;touch-action:none;cursor:grab}
+  .controls.open .grabber, body.fs aside.show .grabber{display:block}
+  .grabber:active{cursor:grabbing}
   .controls.open{display:flex;position:fixed;left:0;right:0;bottom:0;top:auto;z-index:41;
                  flex-direction:column;align-items:flex-start;gap:12px;
                  max-height:66dvh;overflow-y:auto;padding:6px 16px 26px;background:var(--panel);
@@ -193,6 +197,7 @@
 
 <div class="sheet-backdrop" id="sheetBackdrop"></div>
 <div class="controls">
+  <div class="grabber" id="sheetGrab" role="presentation"></div>
   <div class="sheet-head"><span>Filters</span><button class="sheet-close" id="sheetClose">Done</button></div>
   <div class="group" id="corpora"></div>
   <div class="group" id="labels"></div>
@@ -623,6 +628,12 @@ function pairsFor(){
 function renderPanel(){
   renderPanelInner();
   if(document.body.classList.contains("fs")){
+    const grab = document.createElement("div");
+    grab.className = "grabber";
+    grab.setAttribute("role", "presentation");
+    enableSwipeDismiss(grab, panel, () => clearSelection());
+    panel.prepend(grab);
+
     const btn = document.createElement("button");
     btn.className = "panel-close";
     btn.textContent = "✕";
@@ -631,6 +642,37 @@ function renderPanel(){
     panel.prepend(btn);
   }
   updateAsideVisibility();
+}
+
+// drag a sheet down by its handle to dismiss it
+function enableSwipeDismiss(handle, sheet, onDismiss){
+  if(!handle || !sheet) return;
+  let startY = 0, dy = 0, pid = null;
+
+  handle.addEventListener("pointerdown", ev => {
+    pid = ev.pointerId; startY = ev.clientY; dy = 0;
+    sheet.style.transition = "none";
+    try { handle.setPointerCapture(ev.pointerId); } catch(e){}
+    ev.preventDefault();
+  });
+
+  handle.addEventListener("pointermove", ev => {
+    if(pid === null || ev.pointerId !== pid) return;
+    dy = Math.max(0, ev.clientY - startY);
+    sheet.style.transform = `translateY(${dy}px)`;
+  });
+
+  const finish = () => {
+    if(pid === null) return;
+    pid = null;
+    sheet.style.transition = "transform .2s ease-out";
+    sheet.style.transform = "";
+    const close = dy > 80;
+    dy = 0;
+    if(close) onDismiss();
+  };
+  handle.addEventListener("pointerup", finish);
+  handle.addEventListener("pointercancel", finish);
 }
 
 function renderPanelInner(){
@@ -1012,6 +1054,7 @@ else {
   });
   document.getElementById("sheetClose").addEventListener("click", () => setFiltersOpen(false));
   document.getElementById("sheetBackdrop").addEventListener("click", () => setFiltersOpen(false));
+  enableSwipeDismiss(document.getElementById("sheetGrab"), controlsEl, () => setFiltersOpen(false));
 }
 </script>
 </body>
