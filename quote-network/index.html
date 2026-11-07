@@ -20,12 +20,17 @@
   .sub{color:var(--muted);font-size:13px}
   .sub b{color:var(--ink);font-weight:600}
   .hdr{display:flex;gap:24px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap}
+  .hdr-title{min-width:0}
+  .hdr-actions{display:flex;gap:8px;align-items:center;flex-shrink:0}
+  .filters-btn{display:none;border:1px solid var(--line);background:#fff;border-radius:8px;
+               padding:7px 12px;font-size:12.5px;cursor:pointer;white-space:nowrap}
   .download{background:var(--ink);color:#fff;text-decoration:none;padding:9px 14px;border-radius:8px;
             font-size:13px;font-weight:600;white-space:nowrap}
   .download:hover{opacity:.88}
 
   .controls{display:flex;gap:18px;flex-wrap:wrap;align-items:center;padding:10px 24px;
             border-bottom:1px solid var(--line);background:var(--panel)}
+  .sheet-head,.sheet-backdrop{display:none}
   .group{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
   .group>span.lbl{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-right:2px}
   .toggle{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:999px;
@@ -44,7 +49,7 @@
 
   .layout{flex:1;display:flex;min-height:0}
   .graphwrap{flex:1;position:relative;min-width:0;overflow:hidden;min-height:68vh}
-  svg{width:100%;height:100%;display:block;cursor:grab}
+  svg{width:100%;height:100%;display:block;cursor:grab;touch-action:none}
   svg.dragging{cursor:grabbing}
   .tip{position:absolute;pointer-events:none;background:#17181a;color:#fff;padding:7px 10px;border-radius:7px;
        font-size:12px;line-height:1.35;opacity:0;transition:opacity .12s;max-width:250px;z-index:5}
@@ -103,10 +108,46 @@
   .pair .ev{margin-top:6px;border-left:3px solid var(--line);padding-left:8px;color:#555;font-style:italic;font-size:12px}
   .empty{color:var(--muted);font-size:13px}
   .hint{color:var(--muted);font-size:12px;margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
-  @media (max-width:900px){
-    .layout{flex-direction:column}
-    aside{width:auto;max-width:none;border-left:none;border-top:1px solid var(--line);max-height:45vh}
-    .graphwrap{min-height:52vh}
+  /* ---- phone layout: graph and results split the screen, filters collapsed ---- */
+  @media (max-width: 900px){
+    html,body{height:100vh;height:100dvh}
+    body{overflow:hidden}
+    header{padding:10px 14px 9px}
+    h1{font-size:16px;margin-bottom:2px}
+    .sub{font-size:11.5px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;
+         -webkit-box-orient:vertical;overflow:hidden}
+    .hdr{gap:10px;align-items:center;flex-wrap:nowrap}
+    .filters-btn{display:inline-block}
+    .download{padding:7px 11px;font-size:12px}
+    .controls{display:none}
+    .controls.open{display:flex;position:fixed;left:0;right:0;bottom:0;top:auto;z-index:41;
+                   flex-direction:column;align-items:flex-start;gap:12px;
+                   max-height:66dvh;overflow-y:auto;padding:6px 16px 26px;
+                   border-top:1px solid var(--line);border-radius:16px 16px 0 0;
+                   box-shadow:0 -14px 34px rgba(0,0,0,.22)}
+    .sheet-head{display:flex;align-items:center;justify-content:space-between;width:100%;
+                position:sticky;top:0;background:var(--panel);padding:8px 0 6px;
+                border-bottom:1px solid var(--line);font-size:11px;letter-spacing:.08em;
+                text-transform:uppercase;color:var(--muted)}
+    .sheet-close{border:none;background:none;color:#0b5cad;font-size:14px;font-weight:600;
+                 padding:6px 4px;cursor:pointer}
+    .sheet-backdrop.show{display:block;position:fixed;inset:0;background:rgba(15,18,20,.32);z-index:40}
+    .group>span.lbl{font-size:10.5px}
+    .layout{flex-direction:column;min-height:0}
+    .graphwrap{flex:0 0 52%;min-height:0;border-bottom:1px solid var(--line)}
+    aside{flex:1 1 auto;width:auto;max-width:none;min-height:0;max-height:none;
+          border-left:none;border-top:none;padding:12px 14px 28px}
+    .toggle,.chip{min-height:34px;font-size:13px}
+    input[type=range]{width:150px}
+    input[type=search]{min-width:150px;flex:1}
+    aside h2{font-size:16px}
+    tr.row td{padding:10px 6px;font-size:13.5px}
+    .pair{padding:11px 12px}
+    .pair .refs{font-size:13px}
+    .qtext{font-size:14px;line-height:1.5}
+    details.just summary{font-size:13px;padding:7px 0}
+    .hint{font-size:11.5px}
+    .tip{display:none}
   }
 </style>
 </head>
@@ -114,15 +155,20 @@
 
 <header>
   <div class="hdr">
-    <div>
+    <div class="hdr-title">
       <h1>Scripture quotation network</h1>
       <div class="sub" id="subtitle">loading…</div>
     </div>
-    <a class="download" href="matrix_classifications.csv" download>Download CSV</a>
+    <div class="hdr-actions">
+      <button class="filters-btn" id="filtersBtn" aria-expanded="false">Filters</button>
+      <a class="download" href="matrix_classifications.csv" download>Download CSV</a>
+    </div>
   </div>
 </header>
 
+<div class="sheet-backdrop" id="sheetBackdrop"></div>
 <div class="controls">
+  <div class="sheet-head"><span>Filters</span><button class="sheet-close" id="sheetClose">Done</button></div>
   <div class="group" id="corpora"></div>
   <div class="group" id="labels"></div>
   <div class="group">
@@ -296,7 +342,7 @@ function layout(nodes, edges, previous){
       n.vx *= 0.80; n.vy *= 0.80;
       n.x += n.vx; n.y += n.vy;
       n.x = Math.max(n.r+10, Math.min(w-n.r-10, n.x));
-      n.y = Math.max(n.r+10, Math.min(h-n.r-10, n.y));
+      n.y = Math.max(n.r+10, Math.min(h-n.r-24, n.y));
     }
   }
   return {nodes, edges};
@@ -308,6 +354,22 @@ const svg = document.getElementById("graph");
 const tip = document.getElementById("tip");
 const panel = document.getElementById("panel");
 const graphwrap = document.getElementById("graphwrap");
+const controlsEl = document.querySelector(".controls");
+
+function setFiltersOpen(open){
+  controlsEl.classList.toggle("open", open);
+  const backdrop = document.getElementById("sheetBackdrop");
+  if(backdrop) backdrop.classList.toggle("show", open);
+  const btn = document.getElementById("filtersBtn");
+  if(btn){
+    btn.textContent = open ? "Hide filters" : "Filters";
+    btn.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+}
+
+function closeFiltersOnMobile(){
+  if(window.innerWidth <= 900 && controlsEl.classList.contains("open")) setFiltersOpen(false);
+}
 const subtitle = document.getElementById("subtitle");
 
 let view = {x:0, y:0, k:1};
@@ -387,15 +449,24 @@ function draw(nodes, edges){
                 !edges.some(e => (e.a===bookFocus && e.b===n.id) || (e.b===bookFocus && e.a===n.id));
     const gnode = el("g", {transform:`translate(${n.x},${n.y})`, style:"cursor:grab"});
     n.el = gnode;
+    // invisible hit area: small dots are otherwise impossible to tap on a phone
+    gnode.appendChild(el("circle", {
+      r: Math.max(n.r + 9, 17), fill:"transparent", stroke:"none",
+    }));
     gnode.appendChild(el("circle", {
       r:n.r, fill:corpusColor(n.id), "fill-opacity": dim ? 0.18 : 0.9,
       stroke: state.book===n.id ? "#111" : "#fff",
       "stroke-width": state.book===n.id ? 2.5 : 1.2,
+      "pointer-events":"none",
     }));
-    const showLabel = n.pairs >= 6 || corpusOf(n.id) !== "kjv" || state.book === n.id;
+    const narrow = window.innerWidth <= 900;
+    const showLabel = narrow
+      ? (n.pairs >= 60 || view.k >= 1.7 || state.book === n.id)
+      : (n.pairs >= 6 || corpusOf(n.id) !== "kjv" || state.book === n.id);
     if(showLabel){
       const label = el("text", {
-        x:0, y:n.r+12, "text-anchor":"middle", "font-size": n.pairs > 40 ? 11.5 : 10.5,
+        x:0, y:n.r+12, "text-anchor":"middle",
+        "font-size": narrow ? (n.pairs > 40 ? 12.5 : 11.5) : (n.pairs > 40 ? 11.5 : 10.5),
         fill: dim ? "#c4c4c0" : "#2b2b2b", "pointer-events":"none",
         "paint-order":"stroke", stroke:"#fbfbfa", "stroke-width":3,
         "stroke-linejoin":"round",
@@ -454,11 +525,13 @@ function hideTip(){ tip.style.opacity = 0; }
 
 function selectBook(id){
   state.book = id; state.edge = null; state.back = null;
+  closeFiltersOnMobile();
   renderPanel(); redraw();
 }
 function selectEdge(a, b, from){
   state.edge = [a, b]; state.book = null;
   state.back = from || null;
+  closeFiltersOnMobile();
   renderPanel(); redraw();
 }
 function clearSelection(){
@@ -504,6 +577,7 @@ function pairsFor(){
 }
 
 function renderPanel(){
+  if(window.innerWidth <= 900) panel.scrollTop = 0;
   const {nodes, edges} = aggregate(filteredPairs());
   const byId = new Map(nodes.map(n => [n.id, n]));
 
@@ -719,16 +793,68 @@ window.addEventListener("keydown", ev => {
   else if(state.edge || state.book) clearSelection();
 });
 
+const pointers = new Map();
+let panStart = null, pinchStart = null, viewDirty = false;
+
 svg.addEventListener("pointerdown", ev => {
   if(dragging) return;
-  svg.classList.add("dragging");
-  const start = {x:ev.clientX, y:ev.clientY, vx:view.x, vy:view.y};
-  const move = e2 => { view.x = start.vx + (e2.clientX - start.x); view.y = start.vy + (e2.clientY - start.y); applyView(); };
-  const up = () => { svg.classList.remove("dragging"); svg.removeEventListener("pointermove", move); svg.removeEventListener("pointerup", up); };
-  svg.addEventListener("pointermove", move);
-  svg.addEventListener("pointerup", up);
-  if(ev.target === svg) clearSelection();
+  pointers.set(ev.pointerId, {x:ev.clientX, y:ev.clientY});
+  try { svg.setPointerCapture(ev.pointerId); } catch(e){}
+  if(pointers.size === 1){
+    panStart = {x:ev.clientX, y:ev.clientY, vx:view.x, vy:view.y, moved:false,
+                onEmpty: ev.target === svg};
+    svg.classList.add("dragging");
+  } else if(pointers.size === 2){
+    // two fingers: pinch to zoom about the midpoint
+    panStart = null;
+    const [p1, p2] = [...pointers.values()];
+    pinchStart = {dist: Math.hypot(p1.x - p2.x, p1.y - p2.y) || 1, k: view.k,
+                  cx: (p1.x + p2.x) / 2, cy: (p1.y + p2.y) / 2, vx: view.x, vy: view.y};
+  }
 });
+
+svg.addEventListener("pointermove", ev => {
+  if(!pointers.has(ev.pointerId)) return;
+  pointers.set(ev.pointerId, {x:ev.clientX, y:ev.clientY});
+
+  if(pinchStart && pointers.size >= 2){
+    const [p1, p2] = [...pointers.values()];
+    const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y) || 1;
+    const k = Math.max(0.35, Math.min(4, pinchStart.k * (dist / pinchStart.dist)));
+    const rect = svg.getBoundingClientRect();
+    const mx = pinchStart.cx - rect.left, my = pinchStart.cy - rect.top;
+    view.x = mx - (mx - pinchStart.vx) * (k / pinchStart.k);
+    view.y = my - (my - pinchStart.vy) * (k / pinchStart.k);
+    view.k = k;
+    applyView();
+    viewDirty = true;
+    return;
+  }
+
+  if(panStart){
+    const dx = ev.clientX - panStart.x, dy = ev.clientY - panStart.y;
+    if(Math.abs(dx) > 4 || Math.abs(dy) > 4) panStart.moved = true;
+    view.x = panStart.vx + dx;
+    view.y = panStart.vy + dy;
+    applyView();
+    viewDirty = true;
+  }
+});
+
+function endPointer(ev, cancelled){
+  if(!pointers.has(ev.pointerId)) return;
+  pointers.delete(ev.pointerId);
+  if(pointers.size < 2) pinchStart = null;
+  if(pointers.size === 0){
+    svg.classList.remove("dragging");
+    if(panStart && !panStart.moved && !cancelled && panStart.onEmpty) clearSelection();
+    panStart = null;
+    // redraw once the gesture ends: labels are revealed as you zoom in
+    if(viewDirty){ viewDirty = false; redraw(); }
+  }
+}
+svg.addEventListener("pointerup", ev => endPointer(ev, false));
+svg.addEventListener("pointercancel", ev => endPointer(ev, true));
 
 window.addEventListener("pointermove", ev => {
   if(!dragging) return;
@@ -803,7 +929,23 @@ else {
   redraw();
   renderPanel();
   updateSubtitle(filteredPairs());
-  window.addEventListener("resize", () => { redraw(); });
+
+  // the graph is sized from its container, so redraw when the container changes,
+  // not only when the window does (filters opening, mobile browser chrome, rotation)
+  let resizeTimer = null;
+  const onResize = () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => redraw(), 120);
+  };
+  window.addEventListener("resize", onResize);
+  if(window.ResizeObserver) new ResizeObserver(onResize).observe(graphwrap);
+
+  const filtersBtn = document.getElementById("filtersBtn");
+  filtersBtn.addEventListener("click", () => {
+    setFiltersOpen(!controlsEl.classList.contains("open"));
+  });
+  document.getElementById("sheetClose").addEventListener("click", () => setFiltersOpen(false));
+  document.getElementById("sheetBackdrop").addEventListener("click", () => setFiltersOpen(false));
 }
 </script>
 </body>
