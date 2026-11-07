@@ -461,7 +461,7 @@ function draw(nodes, edges){
     }));
     const narrow = window.innerWidth <= 900;
     const showLabel = narrow
-      ? (n.pairs >= 60 || view.k >= 1.7 || state.book === n.id)
+      ? (n.pairs >= 120 || view.k >= 1.5 || state.book === n.id)
       : (n.pairs >= 6 || corpusOf(n.id) !== "kjv" || state.book === n.id);
     if(showLabel){
       const label = el("text", {
