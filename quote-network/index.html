@@ -1,0 +1,810 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scripture quotation network — Data Science Magic</title>
+<style>
+  :root{
+    --bg:#fbfbfa; --panel:#fff; --ink:#17181a; --muted:#6b7280; --line:#e5e5e2;
+    --bom:#1f6f8b; --kjv:#8c5a2b; --dc:#5b4b8a; --pgp:#2f7d5b;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       color:var(--ink);background:var(--bg);display:flex;flex-direction:column}
+  a{color:#0b5cad}
+
+  header{padding:18px 24px 12px;border-bottom:1px solid var(--line);background:var(--panel)}
+  h1{font-size:20px;margin:0 0 3px;letter-spacing:-.01em}
+  .sub{color:var(--muted);font-size:13px}
+  .sub b{color:var(--ink);font-weight:600}
+  .hdr{display:flex;gap:24px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap}
+  .download{background:var(--ink);color:#fff;text-decoration:none;padding:9px 14px;border-radius:8px;
+            font-size:13px;font-weight:600;white-space:nowrap}
+  .download:hover{opacity:.88}
+
+  .controls{display:flex;gap:18px;flex-wrap:wrap;align-items:center;padding:10px 24px;
+            border-bottom:1px solid var(--line);background:var(--panel)}
+  .group{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+  .group>span.lbl{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-right:2px}
+  .toggle{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:999px;
+          padding:4px 10px;font-size:12.5px;cursor:pointer;background:#fff;user-select:none}
+  .toggle input{display:none}
+  .toggle .dot{width:9px;height:9px;border-radius:50%}
+  .toggle.off{opacity:.35}
+  .chip{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:999px;
+        padding:4px 9px;font-size:12px;cursor:pointer;background:#fff;user-select:none;white-space:nowrap}
+  .chip.off{opacity:.32}
+  .chip .sw{width:9px;height:9px;border-radius:2px}
+  input[type=range]{width:130px;accent-color:#17181a}
+  input[type=search]{border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:13px;min-width:170px}
+  .value{font-variant-numeric:tabular-nums;color:var(--muted);font-size:12px;min-width:34px}
+  button.reset{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 11px;font-size:12.5px;cursor:pointer}
+
+  .layout{flex:1;display:flex;min-height:0}
+  .graphwrap{flex:1;position:relative;min-width:0;overflow:hidden;min-height:68vh}
+  svg{width:100%;height:100%;display:block;cursor:grab}
+  svg.dragging{cursor:grabbing}
+  .tip{position:absolute;pointer-events:none;background:#17181a;color:#fff;padding:7px 10px;border-radius:7px;
+       font-size:12px;line-height:1.35;opacity:0;transition:opacity .12s;max-width:250px;z-index:5}
+  .tip b{display:block;font-size:12.5px;margin-bottom:2px}
+  .tip .row{color:#c9c9c9}
+
+  aside{width:430px;max-width:46vw;border-left:1px solid var(--line);background:var(--panel);
+        overflow-y:auto;padding:16px 18px 40px}
+  aside h2{font-size:15px;margin:0 0 2px}
+  aside .meta{color:var(--muted);font-size:12.5px;margin-bottom:12px}
+  .crumbs{display:flex;gap:7px;align-items:center;font-size:12px;color:var(--muted);margin-bottom:7px;flex-wrap:wrap}
+  .crumbs a{color:#0b5cad;text-decoration:none;cursor:pointer}
+  .crumbs a:hover{text-decoration:underline}
+  .crumbs b{color:#222;font-weight:600}
+  .crumbs .sep{color:#c9c9c4}
+  .within{border:1px solid var(--line);border-radius:9px;background:#fbfbf9;padding:9px 11px;margin:0 0 13px}
+  .wtitle{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:#6b7280;margin-bottom:6px}
+  .wrow{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12.5px;
+        padding:4px 0;cursor:pointer;border-top:1px solid #f0f0ed}
+  .wrow:first-of-type{border-top:none}
+  .wrow:hover .wgo{text-decoration:underline}
+  .wgo{color:#0b5cad;margin-left:8px;white-space:nowrap}
+  .legend{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+  .legend .k{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--muted)}
+  .legend .k i{width:8px;height:8px;border-radius:2px;display:inline-block}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);
+     padding:5px 6px;border-bottom:1px solid var(--line)}
+  td{padding:6px;border-bottom:1px solid #f0f0ed;vertical-align:top}
+  tr.row{cursor:pointer}
+  tr.row:hover{background:#f7f7f5}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+  .tag{display:inline-block;padding:1px 7px;border-radius:999px;font-size:11px;font-weight:600}
+  .pairs{font-size:12.5px}
+  .pair{border:1px solid var(--line);border-radius:9px;padding:9px 11px;margin-bottom:8px;cursor:pointer;background:#fff}
+  .pair:hover{border-color:#cfcfca}
+  .pair .top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+  .pair .refs{font-weight:600;font-size:12.5px}
+  .pair .cos{color:var(--muted);font-variant-numeric:tabular-nums;font-size:12px}
+  .pair .caret{display:inline-block;margin-left:6px;font-size:9px;color:#adada8;transition:transform .15s}
+  .pair.open .caret{transform:rotate(180deg)}
+  .pair .why{color:#3d3d3d;margin-top:6px;display:none}
+  .pair.open .why{display:block}
+  .pair .tags{display:flex;gap:8px;align-items:center;margin-top:5px;flex-wrap:wrap}
+  .small{font-size:11.5px;color:#8a8a86}
+  .quote{margin-top:10px}
+  .qlabel{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:#6b7280;margin-bottom:3px}
+  .qtext{font-size:12.8px;line-height:1.45;color:#222}
+  details.just{margin-top:11px;border-top:1px dashed var(--line);padding-top:8px}
+  details.just summary{cursor:pointer;font-size:12px;color:#0b5cad;list-style:none}
+  details.just summary::-webkit-details-marker{display:none}
+  details.just summary:before{content:"▸ ";color:#9aa0a6}
+  details.just[open] summary:before{content:"▾ "}
+  .justbody{font-size:12.5px;color:#333;margin-top:6px}
+  .justbody .ev{margin-top:6px}
+  .pair .ev{margin-top:6px;border-left:3px solid var(--line);padding-left:8px;color:#555;font-style:italic;font-size:12px}
+  .empty{color:var(--muted);font-size:13px}
+  .hint{color:var(--muted);font-size:12px;margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
+  @media (max-width:900px){
+    .layout{flex-direction:column}
+    aside{width:auto;max-width:none;border-left:none;border-top:1px solid var(--line);max-height:45vh}
+    .graphwrap{min-height:52vh}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr">
+    <div>
+      <h1>Scripture quotation network</h1>
+      <div class="sub" id="subtitle">loading…</div>
+    </div>
+    <a class="download" href="matrix_classifications.csv" download>Download CSV</a>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="group" id="corpora"></div>
+  <div class="group" id="labels"></div>
+  <div class="group">
+    <span class="lbl">cosine</span>
+    <input type="range" id="cos" min="0.80" max="1" step="0.005" value="0.80">
+    <span class="value" id="cosValue">0.80</span>
+  </div>
+  <div class="group">
+    <span class="lbl">min connections</span>
+    <input type="range" id="minCount" min="1" max="25" step="1" value="1">
+    <span class="value" id="minCountValue">1</span>
+  </div>
+  <div class="group">
+    <input type="search" id="search" placeholder="filter by book or reference">
+  </div>
+  <button class="reset" id="reset">Reset</button>
+</div>
+
+<div class="layout">
+  <div class="graphwrap" id="graphwrap">
+    <svg id="graph"></svg>
+    <div class="tip" id="tip"></div>
+  </div>
+  <aside id="panel"></aside>
+</div>
+
+<script src="data.js"></script>
+<script>
+"use strict";
+
+const DATA = window.VIZ_DATA;
+const LABEL_STYLE = {
+  quotation:          {color:"#1b5e20", bg:"#e6f4ea"},
+  partial_quotation:  {color:"#2e7d32", bg:"#f1f8e9"},
+  paraphrase:         {color:"#e65100", bg:"#fff3e0"},
+  allusion:           {color:"#6a1b9a", bg:"#f3e5f5"},
+  interpretation:     {color:"#00695c", bg:"#e0f2f1"},
+  shared_vocabulary:  {color:"#546e7a", bg:"#eceff1"},
+  unrelated:          {color:"#b71c1c", bg:"#ffebee"},
+};
+const LABEL_ORDER = Object.keys(LABEL_STYLE);
+
+const state = {
+  corpora: new Set(Object.keys(DATA.corpora)),
+  labels: new Set(LABEL_ORDER),
+  minCos: 0.80,
+  minCount: 1,
+  search: "",
+  book: null,     // selected book id
+  edge: null,     // selected [a,b]
+  back: null,     // book we drilled in from, for the back link
+  pinned: new Map(),  // id -> {x,y} for nodes the reader has dragged
+};
+
+const corpusOf = id => id.slice(0, id.indexOf(":"));
+const bookOf = id => id.slice(id.indexOf(":") + 1);
+const corpusName = id => DATA.corpora[corpusOf(id)].label;
+const corpusColor = id => DATA.corpora[corpusOf(id)].color;
+
+function tag(label){
+  const s = LABEL_STYLE[label] || {color:"#333", bg:"#eee"};
+  return `<span class="tag" style="color:${s.color};background:${s.bg}">${label.replace(/_/g," ")}</span>`;
+}
+
+/* ---------- filtering ---------- */
+
+function matchesSearch(pair, terms){
+  if(!terms.length) return true;
+  const hay = (pair.qc + " " + pair.sc + " " + bookOf(pair.q) + " " + bookOf(pair.s)).toLowerCase();
+  return terms.every(t => hay.includes(t));
+}
+
+function filteredPairs(){
+  const terms = state.search.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  return DATA.pairs.filter(p =>
+    state.corpora.has(corpusOf(p.q)) && state.corpora.has(corpusOf(p.s)) &&
+    state.labels.has(p.label) && p.cos >= state.minCos && matchesSearch(p, terms)
+  );
+}
+
+function aggregate(pairs){
+  const nodes = new Map(), edges = new Map();
+  for(const p of pairs){
+    // a within-book pair involves one book once, not twice
+    const ids = p.q === p.s ? [p.q] : [p.q, p.s];
+    for(const id of ids){
+      const n = nodes.get(id) || {id, pairs:0, labels:{}, maxCos:0};
+      n.pairs++; n.labels[p.label] = (n.labels[p.label]||0)+1;
+      n.maxCos = Math.max(n.maxCos, p.cos);
+      nodes.set(id, n);
+    }
+    const key = p.q <= p.s ? p.q + "|" + p.s : p.s + "|" + p.q;
+    const e = edges.get(key) || {a: p.q <= p.s ? p.q : p.s, b: p.q <= p.s ? p.s : p.q,
+                                 count:0, labels:{}, cosineSum:0, maxCos:0};
+    e.count++; e.labels[p.label] = (e.labels[p.label]||0)+1;
+    e.cosineSum += p.cos; e.maxCos = Math.max(e.maxCos, p.cos);
+    edges.set(key, e);
+  }
+  return {nodes:[...nodes.values()], edges:[...edges.values()]};
+}
+
+/* ---------- force layout ---------- */
+
+const W = () => graphwrap.clientWidth || 900;
+const H = () => graphwrap.clientHeight || 640;
+
+function anchorFor(corpus, w, h){
+  const spots = {
+    bom: [w*0.30, h*0.46],
+    kjv: [w*0.72, h*0.46],
+    dc:  [w*0.40, h*0.82],
+    pgp: [w*0.62, h*0.82],
+  };
+  return spots[corpus] || [w*0.5, h*0.5];
+}
+
+function layout(nodes, edges, previous){
+  const w = W(), h = H();
+  const byId = new Map();
+  for(const n of nodes){
+    const pin = state.pinned.get(n.id);
+    const old = previous && previous.get(n.id);
+    n.x = pin ? pin.x : (old ? old.x : anchorFor(corpusOf(n.id), w, h)[0] + (Math.random()-0.5)*160);
+    n.y = pin ? pin.y : (old ? old.y : anchorFor(corpusOf(n.id), w, h)[1] + (Math.random()-0.5)*160);
+    n.vx = n.vy = 0;
+    n.r = 4 + Math.sqrt(n.pairs) * 1.15;
+    n.pinned = !!pin;
+    byId.set(n.id, n);
+  }
+  const links = edges.map(e => ({a: byId.get(e.a), b: byId.get(e.b), e}))
+                     .filter(l => l.a && l.b);
+
+  const ticks = 420;
+  for(let t=0; t<ticks; t++){
+    const alpha = 1 - t/ticks;
+    for(let i=0;i<nodes.length;i++){
+      const a = nodes[i];
+      const [ax, ay] = anchorFor(corpusOf(a.id), w, h);
+      a.vx += (ax - a.x) * 0.0045 * alpha;
+      a.vy += (ay - a.y) * 0.0045 * alpha;
+      for(let j=i+1;j<nodes.length;j++){
+        const b = nodes[j];
+        let dx = a.x-b.x, dy = a.y-b.y;
+        let d2 = dx*dx + dy*dy || 0.01;
+        if(d2 > 240000) continue;
+        const d = Math.sqrt(d2);
+        // charge repulsion
+        const force = 3400 / d2;
+        a.vx += (dx/d)*force*alpha; a.vy += (dy/d)*force*alpha;
+        b.vx -= (dx/d)*force*alpha; b.vy -= (dy/d)*force*alpha;
+        // hard collision so labels have room
+        const minGap = a.r + b.r + 26;
+        if(d < minGap){
+          const push = (minGap - d) * 0.22 * alpha;
+          a.vx += (dx/d)*push; a.vy += (dy/d)*push;
+          b.vx -= (dx/d)*push; b.vy -= (dy/d)*push;
+        }
+      }
+    }
+    for(const {a,b,e} of links){
+      const dx = b.x-a.x, dy = b.y-a.y;
+      const d = Math.sqrt(dx*dx+dy*dy) || 0.01;
+      const target = 95 + 28*Math.log2(1+e.count);
+      const k = (d - target) * 0.0075 * alpha;
+      const ux = dx/d, uy = dy/d;
+      a.vx += ux*k; a.vy += uy*k;
+      b.vx -= ux*k; b.vy -= uy*k;
+    }
+    for(const n of nodes){
+      if(n.pinned){ n.vx = n.vy = 0; continue; }
+      n.vx *= 0.80; n.vy *= 0.80;
+      n.x += n.vx; n.y += n.vy;
+      n.x = Math.max(n.r+10, Math.min(w-n.r-10, n.x));
+      n.y = Math.max(n.r+10, Math.min(h-n.r-10, n.y));
+    }
+  }
+  return {nodes, edges};
+}
+
+/* ---------- rendering ---------- */
+
+const svg = document.getElementById("graph");
+const tip = document.getElementById("tip");
+const panel = document.getElementById("panel");
+const graphwrap = document.getElementById("graphwrap");
+const subtitle = document.getElementById("subtitle");
+
+let view = {x:0, y:0, k:1};
+let renderer = null;   // {nodes, edges, positions}
+let dragging = null;
+let suppressClick = false;   // a drag must not also count as a click on the node
+
+const NS = "http://www.w3.org/2000/svg";
+function el(name, attrs){
+  const node = document.createElementNS(NS, name);
+  for(const k in attrs) node.setAttribute(k, attrs[k]);
+  return node;
+}
+
+function edgeColor(edge){
+  const entries = Object.entries(edge.labels).sort((a,b)=>b[1]-a[1]);
+  return (LABEL_STYLE[entries[0][0]] || {color:"#999"}).color;
+}
+
+function draw(nodes, edges){
+  svg.innerHTML = "";
+  const g = el("g", {id:"viewport"});
+  svg.appendChild(g);
+
+  const edgeLayer = el("g", {});
+  const nodeLayer = el("g", {});
+  g.appendChild(edgeLayer); g.appendChild(nodeLayer);
+
+  const byId = new Map(nodes.map(n => [n.id, n]));
+  const focus = state.edge;
+  const bookFocus = state.book;
+  for(const n of nodes) n.links = [];
+
+  for(const e of edges){
+    const a = byId.get(e.a), b = byId.get(e.b);
+    if(!a || !b) continue;
+    if(e.count < state.minCount) continue;
+    const active = !bookFocus && !focus ? true
+      : (focus ? (focus[0]===e.a && focus[1]===e.b) || (focus[0]===e.b && focus[1]===e.a)
+               : (e.a===bookFocus || e.b===bookFocus));
+    const width = Math.min(1 + Math.log2(1+e.count)*0.9, 7);
+    const opacity = active ? (e.count === 1 ? 0.30 : 0.55) : 0.08;
+
+    if(e.a === e.b){
+      // within-book repetition is listed in the panel when a book is opened,
+      // rather than drawn as a ring that reads like a stray empty node
+      continue;
+    }
+
+    const line = el("line", {
+      x1:a.x, y1:a.y, x2:b.x, y2:b.y,
+      stroke: edgeColor(e),
+      "stroke-width": width,
+      "stroke-opacity": opacity,
+      "stroke-linecap":"round",
+    });
+    edgeLayer.appendChild(line);
+    a.links.push({el: line, end:"a"});
+    b.links.push({el: line, end:"b"});
+    if(active && e.count >= 3){
+      const hit = el("line", {x1:a.x, y1:a.y, x2:b.x, y2:b.y, stroke:"transparent",
+                              "stroke-width": 14, style:"cursor:pointer"});
+      hit.addEventListener("click", ev => { ev.stopPropagation(); selectEdge(e.a, e.b); });
+      hit.addEventListener("mousemove", ev => showTip(ev,
+        `<b>${bookOf(e.a)} — ${bookOf(e.b)}</b><div class="row">${e.count} connections · mean cosine ${(e.cosineSum/e.count).toFixed(3)}</div>` +
+        Object.entries(e.labels).sort((x,y)=>y[1]-x[1]).slice(0,3)
+          .map(([l,n]) => `<div class="row">${l.replace(/_/g," ")}: ${n}</div>`).join("")));
+      hit.addEventListener("mouseleave", hideTip);
+      edgeLayer.appendChild(hit);
+      a.links.push({el: hit, end:"a"});
+      b.links.push({el: hit, end:"b"});
+    }
+  }
+
+  for(const n of nodes){
+    const dim = bookFocus && n.id !== bookFocus &&
+                !edges.some(e => (e.a===bookFocus && e.b===n.id) || (e.b===bookFocus && e.a===n.id));
+    const gnode = el("g", {transform:`translate(${n.x},${n.y})`, style:"cursor:grab"});
+    n.el = gnode;
+    gnode.appendChild(el("circle", {
+      r:n.r, fill:corpusColor(n.id), "fill-opacity": dim ? 0.18 : 0.9,
+      stroke: state.book===n.id ? "#111" : "#fff",
+      "stroke-width": state.book===n.id ? 2.5 : 1.2,
+    }));
+    const showLabel = n.pairs >= 6 || corpusOf(n.id) !== "kjv" || state.book === n.id;
+    if(showLabel){
+      const label = el("text", {
+        x:0, y:n.r+12, "text-anchor":"middle", "font-size": n.pairs > 40 ? 11.5 : 10.5,
+        fill: dim ? "#c4c4c0" : "#2b2b2b", "pointer-events":"none",
+        "paint-order":"stroke", stroke:"#fbfbfa", "stroke-width":3,
+        "stroke-linejoin":"round",
+      });
+      label.textContent = bookOf(n.id);
+      gnode.appendChild(label);
+    }
+
+    gnode.addEventListener("mouseenter", ev => {
+      showTip(ev, `<b>${bookOf(n.id)}</b><div class="row">${corpusName(n.id)} · ${n.pairs} connections</div>` +
+        Object.entries(n.labels).sort((x,y)=>y[1]-x[1]).slice(0,4)
+          .map(([l,c]) => `<div class="row">${l.replace(/_/g," ")}: ${c}</div>`).join(""));
+    });
+    gnode.addEventListener("mousemove", ev => showTip(ev, tip.innerHTML));
+    gnode.addEventListener("mouseleave", hideTip);
+    gnode.addEventListener("click", ev => {
+      ev.stopPropagation();
+      if(suppressClick){ suppressClick = false; return; }
+      selectBook(n.id);
+    });
+    gnode.addEventListener("dblclick", ev => {
+      ev.stopPropagation();
+      state.pinned.delete(n.id);
+      redraw();
+    });
+    gnode.addEventListener("pointerdown", ev => {
+      ev.stopPropagation(); ev.preventDefault();
+      hideTip();
+      dragging = {node:n, startX:ev.clientX, startY:ev.clientY, ox:n.x, oy:n.y, moved:false};
+      gnode.style.cursor = "grabbing";
+    });
+    nodeLayer.appendChild(gnode);
+  }
+
+  renderer = {nodes, edges};
+  applyView();
+}
+
+function applyView(){
+  const g = svg.querySelector("#viewport");
+  if(g) g.setAttribute("transform", `translate(${view.x},${view.y}) scale(${view.k})`);
+}
+
+function showTip(ev, html){
+  tip.innerHTML = html;
+  tip.style.opacity = 1;
+  const rect = graphwrap.getBoundingClientRect();
+  let x = ev.clientX - rect.left + 14, y = ev.clientY - rect.top + 14;
+  if(x + 250 > rect.width) x -= 270;
+  if(y + 90 > rect.height) y -= 100;
+  tip.style.left = x + "px"; tip.style.top = y + "px";
+}
+function hideTip(){ tip.style.opacity = 0; }
+
+/* ---------- panel ---------- */
+
+function selectBook(id){
+  state.book = id; state.edge = null; state.back = null;
+  renderPanel(); redraw();
+}
+function selectEdge(a, b, from){
+  state.edge = [a, b]; state.book = null;
+  state.back = from || null;
+  renderPanel(); redraw();
+}
+function clearSelection(){
+  state.book = null; state.edge = null; state.back = null;
+  renderPanel(); redraw();
+}
+
+function crumbsHtml(){
+  const parts = [`<a href="#" data-nav="all">All books</a>`];
+  if(state.edge){
+    if(state.back) parts.push(`<a href="#" data-nav="back">${bookOf(state.back)}</a>`);
+    const [a, b] = state.edge;
+    parts.push(`<b>${a === b ? `within ${bookOf(a)}` : `${bookOf(a)} — ${bookOf(b)}`}</b>`);
+  } else if(state.book){
+    parts.push(`<b>${bookOf(state.book)}</b>`);
+  }
+  return `<nav class="crumbs">${parts.join('<span class="sep">›</span>')}</nav>`;
+}
+
+function bindCrumbs(){
+  panel.querySelectorAll("[data-nav]").forEach(a => a.addEventListener("click", ev => {
+    ev.preventDefault(); ev.stopPropagation();
+    if(a.dataset.nav === "all") clearSelection();
+    else if(a.dataset.nav === "back" && state.back) selectBook(state.back);
+  }));
+}
+
+function connectionsFor(edges, bookId){
+  return edges.filter(e => e.a===bookId || e.b===bookId)
+              .map(e => ({other: e.a===bookId ? e.b : e.a, edge:e}))
+              .sort((x,y) => y.edge.count - x.edge.count);
+}
+
+function pairsFor(){
+  let pairs = filteredPairs();
+  if(state.edge){
+    const [a,b] = state.edge;
+    pairs = pairs.filter(p => (p.q===a && p.s===b) || (p.q===b && p.s===a));
+  } else if(state.book){
+    pairs = pairs.filter(p => p.q===state.book || p.s===state.book);
+  }
+  return pairs.sort((x,y) => y.cos - x.cos);
+}
+
+function renderPanel(){
+  const {nodes, edges} = aggregate(filteredPairs());
+  const byId = new Map(nodes.map(n => [n.id, n]));
+
+  if(state.edge){
+    const [a,b] = state.edge;
+    const edge = edges.find(e => (e.a===a&&e.b===b)||(e.a===b&&e.b===a));
+    const pairs = pairsFor();
+    panel.innerHTML = `
+      ${crumbsHtml()}
+      <h2>${a === b ? `${bookOf(a)} — within the book` : `${bookOf(a)} — ${bookOf(b)}`}</h2>
+      <div class="meta">${pairs.length} classified connections${edge ? " · mean cosine " + (edge.cosineSum/edge.count).toFixed(3) : ""}</div>
+      <div class="legend">${Object.entries(edge ? edge.labels : {}).sort((x,y)=>y[1]-x[1])
+        .map(([l,n]) => `<span class="k">${tag(l)} ${n}</span>`).join("")}</div>
+      <div class="pairs">${pairs.slice(0, 200).map(pairCard).join("") ||
+        "<div class='empty'>No classified connections at this filter.</div>"}</div>
+      ${pairs.length > 200 ? `<div class="hint">Showing the strongest 200 of ${pairs.length}. Narrow the filters or download the CSV for all of them.</div>` : ""}
+      <div class="hint">Click a connection to read the two passages. Use the trail at the top, or press Escape, to go back.</div>`;
+    bindCrumbs();
+    bindPairs();
+    return;
+  }
+
+  if(state.book){
+    const id = state.book;
+    const node = byId.get(id);
+    const connections = connectionsFor(edges, id);
+    const within = connections.filter(c => c.other === id);
+    const others = connections.filter(c => c.other !== id);
+    const pairs = pairsFor();
+    panel.innerHTML = `
+      ${crumbsHtml()}
+      <h2>${bookOf(id)}</h2>
+      <div class="meta">${corpusName(id)} · ${node ? node.pairs : 0} classified connections at this filter</div>
+      ${within.length ? `<div class="within">
+        <div class="wtitle">Within this book</div>
+        ${within.map(({edge}) => {
+          const top = Object.entries(edge.labels).sort((x,y)=>y[1]-x[1])[0];
+          return `<div class="wrow" data-a="${edge.a}" data-b="${edge.b}">
+            <span>${edge.count} ${edge.count === 1 ? "connection" : "connections"} inside ${bookOf(id)}</span>
+            <span>${tag(top[0])}<span class="wgo">see the passages →</span></span></div>`;
+        }).join("")}
+      </div>` : ""}
+      <table><thead><tr><th>connected book</th><th style="text-align:right">n</th><th>top label</th></tr></thead><tbody>
+        ${others.map(({other, edge}) => {
+          const top = Object.entries(edge.labels).sort((x,y)=>y[1]-x[1])[0];
+          return `<tr class="row" data-a="${edge.a}" data-b="${edge.b}">
+            <td>${bookOf(other)} <span style="color:#999">· ${corpusOf(other)}</span></td>
+            <td class="num">${edge.count}</td><td>${tag(top[0])}</td></tr>`;
+        }).join("") || "<tr><td colspan='3' class='empty'>No connections to other books at this filter.</td></tr>"}
+      </tbody></table>
+      <div class="hint">Click a row to see the actual passages. ${pairs.length} connections in this book at the current filters.</div>`;
+    bindCrumbs();
+    panel.querySelectorAll(".wrow").forEach(row => {
+      row.addEventListener("click", () => selectEdge(row.dataset.a, row.dataset.b, id));
+    });
+    panel.querySelectorAll("tr.row").forEach(row => {
+      row.addEventListener("click", () => selectEdge(row.dataset.a, row.dataset.b, id));
+    });
+    return;
+  }
+
+  const top = edges.slice().sort((a,b)=>b.count-a.count).slice(0, 12);
+  panel.innerHTML = `
+    <h2>How to read this</h2>
+    <div class="meta">Each dot is a book; each line is the number of classified connections between two books.</div>
+    <div class="legend">${LABEL_ORDER.map(l => `<span class="k">${tag(l)}</span>`).join("")}</div>
+    <table><thead><tr><th>strongest book pairs</th><th style="text-align:right">n</th><th></th></tr></thead><tbody>
+      ${top.map(e => `<tr class="row" data-a="${e.a}" data-b="${e.b}">
+        <td>${e.a === e.b ? "within " + bookOf(e.a) : bookOf(e.a) + " — " + bookOf(e.b)}</td>
+        <td class="num">${e.count}</td>
+        <td>${tag(Object.entries(e.labels).sort((x,y)=>y[1]-x[1])[0][0])}</td></tr>`).join("") ||
+        "<tr><td colspan='3' class='empty'>No connections at this filter.</td></tr>"}
+    </tbody></table>
+    <div class="hint">Click a book to see what it connects to, then click a connection to read the passages.
+    Drag a book to move it, double-click it to let the layout take over again.
+    Repetition inside a single book is listed in that book's panel rather than drawn on the graph.
+    Filters above narrow everything: corpus, label, cosine floor, and how many connections a line needs.</div>`;
+  panel.querySelectorAll("tr.row").forEach(row => {
+    row.addEventListener("click", () => selectEdge(row.dataset.a, row.dataset.b));
+  });
+}
+
+function pairCard(p){
+  const queryText = DATA.spans[p.qk] || "";
+  const sourceText = DATA.spans[p.sk] || "";
+  const confidence = p.conf == null ? "–" : p.conf.toFixed(2);
+  const reproduced = p.rep == null ? "" : ` · reproduced ${Math.round(p.rep * 100)}%`;
+  return `<div class="pair">
+    <div class="top"><div class="refs">${p.qc} → ${p.sc}</div><div class="cos">${p.cos.toFixed(3)}<span class="caret">▾</span></div></div>
+    <div class="tags">${tag(p.label)}<span class="small">cosine ${p.cos.toFixed(3)}${p.review ? " · needs review" : ""}</span></div>
+    <div class="why">
+      <div class="quote">
+        <div class="qlabel">A · query · ${corpusName(p.q)} · ${p.qc}</div>
+        <div class="qtext">${queryText ? escapeHtml(queryText) : "<em>passage text unavailable</em>"}</div>
+      </div>
+      <div class="quote">
+        <div class="qlabel">B · source · ${corpusName(p.s)} · ${p.sc}</div>
+        <div class="qtext">${sourceText ? escapeHtml(sourceText) : "<em>passage text unavailable</em>"}</div>
+      </div>
+      <details class="just">
+        <summary>Why the classifier said “${p.label.replace(/_/g," ")}”</summary>
+        <div class="justbody">
+          <div>${p.expl ? escapeHtml(p.expl) : "No explanation recorded."}</div>
+          ${p.ev ? `<div class="ev">${escapeHtml(p.ev)}</div>` : ""}
+          <div class="small">confidence ${confidence}${reproduced}</div>
+        </div>
+      </details>
+    </div>
+  </div>`;
+}
+function bindPairs(){
+  panel.querySelectorAll(".pair").forEach(card => {
+    card.addEventListener("click", ev => {
+      // the justification dropdown handles its own toggle
+      if(ev.target.closest("details")) return;
+      // when the card is already open, only its header collapses it, so that
+      // clicking or selecting the passage text never closes what you're reading
+      if(card.classList.contains("open") && ev.target.closest(".why")) return;
+      card.classList.toggle("open");
+    });
+  });
+}
+function escapeHtml(text){
+  return String(text).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+}
+
+/* ---------- controls ---------- */
+
+function buildControls(){
+  const corpora = document.getElementById("corpora");
+  corpora.innerHTML = `<span class="lbl">corpora</span>` + Object.entries(DATA.corpora).map(([id, c]) => `
+    <label class="toggle" data-corpus="${id}">
+      <input type="checkbox" checked>
+      <span class="dot" style="background:${c.color}"></span>${c.label}
+    </label>`).join("");
+  corpora.querySelectorAll(".toggle").forEach(labelEl => {
+    const id = labelEl.dataset.corpus;
+    labelEl.addEventListener("click", ev => {
+      ev.preventDefault();
+      if(state.corpora.has(id)){ state.corpora.delete(id); labelEl.classList.add("off"); }
+      else { state.corpora.add(id); labelEl.classList.remove("off"); }
+      refresh();
+    });
+  });
+
+  const labels = document.getElementById("labels");
+  labels.innerHTML = `<span class="lbl">labels</span>` + LABEL_ORDER.map(l =>
+    `<span class="chip" data-label="${l}"><span class="sw" style="background:${LABEL_STYLE[l].color}"></span>${l.replace(/_/g," ")}</span>`
+  ).join("");
+  labels.querySelectorAll(".chip").forEach(chipEl => {
+    const l = chipEl.dataset.label;
+    chipEl.addEventListener("click", () => {
+      if(state.labels.has(l)){ state.labels.delete(l); chipEl.classList.add("off"); }
+      else { state.labels.add(l); chipEl.classList.remove("off"); }
+      refresh();
+    });
+  });
+
+  const cos = document.getElementById("cos"), cosValue = document.getElementById("cosValue");
+  cos.addEventListener("input", () => {
+    state.minCos = Number(cos.value);
+    cosValue.textContent = state.minCos.toFixed(2);
+    refresh();
+  });
+
+  const minCount = document.getElementById("minCount"), minCountValue = document.getElementById("minCountValue");
+  minCount.addEventListener("input", () => {
+    state.minCount = Number(minCount.value);
+    minCountValue.textContent = state.minCount;
+    redraw();
+  });
+
+  document.getElementById("search").addEventListener("input", ev => {
+    state.search = ev.target.value;
+    refresh();
+  });
+
+  document.getElementById("reset").addEventListener("click", () => {
+    state.corpora = new Set(Object.keys(DATA.corpora));
+    state.labels = new Set(LABEL_ORDER);
+    state.minCos = 0.80; state.minCount = 1; state.search = "";
+    state.book = null; state.edge = null; state.back = null;
+    state.pinned.clear();
+    view = {x:0, y:0, k:1};
+    document.querySelectorAll(".toggle").forEach(el => el.classList.remove("off"));
+    document.querySelectorAll(".chip").forEach(el => el.classList.remove("off"));
+    document.getElementById("cos").value = 0.80;
+    document.getElementById("cosValue").textContent = "0.80";
+    document.getElementById("minCount").value = 1;
+    document.getElementById("minCountValue").textContent = "1";
+    document.getElementById("search").value = "";
+    refresh();
+  });
+}
+
+/* ---------- interaction: pan / zoom / drag ---------- */
+
+svg.addEventListener("wheel", ev => {
+  ev.preventDefault();
+  const rect = svg.getBoundingClientRect();
+  const mx = ev.clientX - rect.left, my = ev.clientY - rect.top;
+  const factor = Math.exp(-ev.deltaY * 0.0015);
+  const k = Math.max(0.35, Math.min(4, view.k * factor));
+  view.x = mx - (mx - view.x) * (k / view.k);
+  view.y = my - (my - view.y) * (k / view.k);
+  view.k = k;
+  applyView();
+}, {passive:false});
+
+window.addEventListener("keydown", ev => {
+  if(ev.key !== "Escape") return;
+  if(state.edge && state.back) selectBook(state.back);
+  else if(state.edge || state.book) clearSelection();
+});
+
+svg.addEventListener("pointerdown", ev => {
+  if(dragging) return;
+  svg.classList.add("dragging");
+  const start = {x:ev.clientX, y:ev.clientY, vx:view.x, vy:view.y};
+  const move = e2 => { view.x = start.vx + (e2.clientX - start.x); view.y = start.vy + (e2.clientY - start.y); applyView(); };
+  const up = () => { svg.classList.remove("dragging"); svg.removeEventListener("pointermove", move); svg.removeEventListener("pointerup", up); };
+  svg.addEventListener("pointermove", move);
+  svg.addEventListener("pointerup", up);
+  if(ev.target === svg) clearSelection();
+});
+
+window.addEventListener("pointermove", ev => {
+  if(!dragging) return;
+  const dx = (ev.clientX - dragging.startX) / view.k, dy = (ev.clientY - dragging.startY) / view.k;
+  if(Math.abs(dx) > 2 || Math.abs(dy) > 2) dragging.moved = true;
+  moveNodeTo(dragging.node, dragging.ox + dx, dragging.oy + dy);
+});
+
+window.addEventListener("pointerup", () => {
+  if(!dragging) return;
+  const {node, moved} = dragging;
+  dragging = null;
+  node.el.style.cursor = "grab";
+  if(moved){
+    // remember where the reader put it, then let the rest settle around it
+    state.pinned.set(node.id, {x:node.x, y:node.y});
+    suppressClick = true;
+    setTimeout(() => { suppressClick = false; }, 0);
+    redraw();
+  }
+});
+
+function moveNodeTo(node, x, y){
+  node.x = x; node.y = y;
+  if(node.el) node.el.setAttribute("transform", `translate(${x},${y})`);
+  for(const link of (node.links || [])){
+    if(link.end === "a"){
+      link.el.setAttribute("x1", x); link.el.setAttribute("y1", y);
+    } else {
+      link.el.setAttribute("x2", x); link.el.setAttribute("y2", y);
+    }
+  }
+}
+
+/* ---------- wiring ---------- */
+
+function redraw(keepSelection){
+  const pairs = filteredPairs();
+  const {nodes, edges} = aggregate(pairs);
+  const previous = renderer ? new Map(renderer.nodes.map(n => [n.id, n])) : null;
+  layout(nodes, edges, previous);
+  draw(nodes, edges);
+}
+
+function refresh(){
+  for(const id of ["book","edge"]){
+    if(state[id]){
+      const still = state[id];
+      const {nodes, edges} = aggregate(filteredPairs());
+      const exists = (id === "book")
+        ? nodes.some(n => n.id === still)
+        : edges.some(e => (e.a===still[0]&&e.b===still[1])||(e.a===still[1]&&e.b===still[0]));
+      if(!exists) state[id] = null;
+    }
+  }
+  redraw();
+  renderPanel();
+  updateSubtitle(filteredPairs());
+}
+
+function updateSubtitle(pairs){
+  const total = DATA.totals.pairs;
+  const books = new Set(pairs.flatMap(p => [p.q, p.s])).size;
+  subtitle.innerHTML = `<b>${pairs.length.toLocaleString()}</b> of ${total.toLocaleString()} classified connections ·
+    <b>${books}</b> books · cosine ≥ ${state.minCos.toFixed(2)} ·
+    generated ${DATA.generated_at_utc.slice(0,10)}`;
+}
+
+if(!DATA){ document.body.innerHTML = "<p style='padding:40px'>data.js failed to load.</p>"; }
+else {
+  buildControls();
+  redraw();
+  renderPanel();
+  updateSubtitle(filteredPairs());
+  window.addEventListener("resize", () => { redraw(); });
+}
+</script>
+</body>
+</html>
