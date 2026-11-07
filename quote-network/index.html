@@ -32,9 +32,12 @@
             border-bottom:1px solid var(--line);background:var(--panel)}
   .sheet-head{display:none}
   .sheet-backdrop{display:none}
-  .grabber{display:none;position:absolute;top:6px;left:50%;transform:translateX(-50%);
-           width:38px;height:4px;border-radius:2px;background:#d6d6d0;touch-action:none;cursor:grab}
-  .controls.open .grabber, body.fs aside.show .grabber{display:block}
+  .grabber{display:none;position:absolute;top:0;left:50%;transform:translateX(-50%);
+           width:72px;height:24px;background:transparent;touch-action:none;cursor:grab;z-index:2}
+  .grabber::before{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+                   width:38px;height:4px;border-radius:2px;background:#d6d6d0}
+  .grabber:active::before{background:#b9b9b2}
+  .controls.open .grabber, body.fs aside .grabber{display:block}
   .grabber:active{cursor:grabbing}
   .controls.open{display:flex;position:fixed;left:0;right:0;bottom:0;top:auto;z-index:41;
                  flex-direction:column;align-items:flex-start;gap:12px;
@@ -42,7 +45,7 @@
                  border-top:1px solid var(--line);border-radius:16px 16px 0 0;
                  box-shadow:0 -14px 34px rgba(0,0,0,.22)}
   .controls.open .sheet-head{display:flex;align-items:center;justify-content:space-between;width:100%;
-                 position:sticky;top:0;background:var(--panel);padding:8px 0 6px;
+                 position:sticky;top:0;background:var(--panel);padding:26px 0 6px;
                  border-bottom:1px solid var(--line);font-size:11px;letter-spacing:.08em;
                  text-transform:uppercase;color:var(--muted)}
   .sheet-close{border:none;background:none;color:#0b5cad;font-size:14px;font-weight:600;
@@ -64,10 +67,9 @@
   body.fs .layout{position:fixed;inset:0;z-index:20}
   body.fs .graphwrap{height:100%;flex:1 1 auto;min-height:0;border-bottom:none}
   body.fs aside{position:fixed;left:0;right:0;bottom:0;top:auto;width:auto;max-width:none;
-                max-height:64dvh;z-index:44;border-left:none;border-top:1px solid var(--line);
+                max-height:none;z-index:44;border-left:none;border-top:1px solid var(--line);
                 border-radius:16px 16px 0 0;box-shadow:0 -16px 40px rgba(0,0,0,.28);
-                transform:translateY(110%);transition:transform .18s ease-out;padding-top:36px}
-  body.fs aside.show{transform:translateY(0)}
+                padding-top:36px;height:56%;overflow-y:auto;transition:height .18s ease-out}
   .panel-close{position:absolute;top:9px;right:12px;border:none;background:none;font-size:17px;
                line-height:1;cursor:pointer;color:#8a8a86;padding:4px 6px}
   .group{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
@@ -95,7 +97,7 @@
   .tip b{display:block;font-size:12.5px;margin-bottom:2px}
   .tip .row{color:#c9c9c9}
 
-  aside{width:430px;max-width:46vw;border-left:1px solid var(--line);background:var(--panel);
+  aside{position:relative;width:430px;max-width:46vw;border-left:1px solid var(--line);background:var(--panel);
         overflow-y:auto;padding:16px 18px 40px}
   aside h2{font-size:15px;margin:0 0 2px}
   aside .meta{color:var(--muted);font-size:12.5px;margin-bottom:12px}
@@ -161,9 +163,11 @@
     .controls{display:none}
     .group>span.lbl{font-size:10.5px}
     .layout{flex-direction:column;min-height:0}
-    .graphwrap{flex:0 0 52%;min-height:0;border-bottom:1px solid var(--line)}
-    aside{flex:1 1 auto;width:auto;max-width:none;min-height:0;max-height:none;
-          border-left:none;border-top:none;padding:12px 14px 28px}
+    .graphwrap{flex:1 1 auto;min-height:0;border-bottom:1px solid var(--line)}
+    aside{flex:0 0 auto;height:48%;width:auto;max-width:none;min-height:0;max-height:none;
+          border-left:none;border-top:1px solid var(--line);padding:26px 14px 28px;
+          overflow-y:auto;transition:height .18s ease-out}
+    aside .grabber{display:block}
     .toggle,.chip{min-height:34px;font-size:13px}
     input[type=range]{width:150px}
     input[type=search]{min-width:150px;flex:1}
@@ -410,13 +414,86 @@ function setFullscreen(on){
     btn.setAttribute("aria-pressed", on ? "true" : "false");
   }
   setFiltersOpen(false);
-  updateAsideVisibility();
+  // the layout just changed: put the panel back at a sensible height for the new mode
+  requestAnimationFrame(() => setPanelPos("split"));
   setTimeout(redraw, 60);   // the graph container changed size
 }
 
-function updateAsideVisibility(){
-  const fs = document.body.classList.contains("fs");
-  panel.classList.toggle("show", fs && !!(state.book || state.edge));
+function panelMode(){
+  if(document.body.classList.contains("fs")) return "fs";
+  return window.innerWidth <= 900 ? "mobile" : "desktop";
+}
+
+function panelPositions(){
+  const mode = panelMode();
+  if(mode === "desktop") return null;
+  const layout = document.querySelector(".layout");
+  const H = mode === "fs" ? window.innerHeight : (layout ? layout.clientHeight : window.innerHeight);
+  const p = { peek:96, split:Math.round(H*0.56), tall:Math.round(H*0.88) };
+  if(mode === "fs") p.hidden = 0;      // in full screen you can put it away entirely
+  return p;
+}
+
+function setPanelHeight(px){
+  panel.style.height = px + "px";
+  panel.style.flex = "0 0 auto";
+}
+function clearPanelHeight(){
+  panel.style.height = "";
+  panel.style.flex = "";
+  delete panel.dataset.pos;
+}
+
+function setPanelPos(pos){
+  const p = panelPositions();
+  if(!p){ clearPanelHeight(); return; }
+  const keys = Object.keys(p);
+  if(!(pos in p)) pos = keys.includes("split") ? "split" : keys[0];
+  setPanelHeight(p[pos]);
+  panel.dataset.pos = pos;
+}
+
+function snapPanelHeight(){
+  const p = panelPositions(); if(!p) return;
+  const h = panel.getBoundingClientRect().height;
+  let best = "split", bestD = Infinity;
+  for(const k in p){
+    const d = Math.abs(p[k] - h);
+    if(d < bestD){ bestD = d; best = k; }
+  }
+  setPanelPos(best);
+}
+
+// after a selection, make sure the panel isn't tucked away
+function ensurePanelShown(){
+  const p = panelPositions(); if(!p) return;
+  const h = panel.getBoundingClientRect().height;
+  if(h < p.split * 0.7) setPanelPos("split");
+}
+
+function enablePanelDrag(handle, sheet){
+  let startY = 0, startH = 0, pid = null;
+  handle.addEventListener("pointerdown", ev => {
+    const p = panelPositions(); if(!p) return;
+    pid = ev.pointerId; startY = ev.clientY; startH = sheet.getBoundingClientRect().height;
+    sheet.style.transition = "none";
+    try { handle.setPointerCapture(ev.pointerId); } catch(e){}
+    ev.preventDefault();
+  });
+  handle.addEventListener("pointermove", ev => {
+    if(pid === null || ev.pointerId !== pid) return;
+    const p = panelPositions(); if(!p) return;
+    const h = Math.max(0, Math.min(p.tall, startH - (ev.clientY - startY)));
+    sheet.style.height = h + "px";
+  });
+  const finish = () => {
+    if(pid === null) return;
+    pid = null;
+    sheet.style.transition = "height .18s ease-out";
+    snapPanelHeight();
+  };
+  handle.addEventListener("pointerup", finish);
+  handle.addEventListener("pointercancel", finish);
 }
 const subtitle = document.getElementById("subtitle");
 
@@ -627,21 +704,21 @@ function pairsFor(){
 
 function renderPanel(){
   renderPanelInner();
-  if(document.body.classList.contains("fs")){
+  if(panelPositions()){
     const grab = document.createElement("div");
     grab.className = "grabber";
     grab.setAttribute("role", "presentation");
-    enableSwipeDismiss(grab, panel, () => clearSelection());
+    enablePanelDrag(grab, panel);
     panel.prepend(grab);
 
     const btn = document.createElement("button");
     btn.className = "panel-close";
     btn.textContent = "✕";
     btn.setAttribute("aria-label", "Close panel");
-    btn.addEventListener("click", () => clearSelection());
+    btn.addEventListener("click", () => setPanelPos(panelMode() === "fs" ? "hidden" : "peek"));
     panel.prepend(btn);
   }
-  updateAsideVisibility();
+  if(state.book || state.edge) ensurePanelShown();
 }
 
 // drag a sheet down by its handle to dismiss it
@@ -1035,10 +1112,16 @@ else {
   let resizeTimer = null;
   const onResize = () => {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => redraw(), 120);
+    resizeTimer = setTimeout(() => {
+      if(panelPositions()) setPanelPos(panel.dataset.pos || "split");
+      else clearPanelHeight();
+      redraw();
+    }, 120);
   };
   window.addEventListener("resize", onResize);
   if(window.ResizeObserver) new ResizeObserver(onResize).observe(graphwrap);
+
+  setPanelPos("split");
 
   const filtersBtn = document.getElementById("filtersBtn");
   filtersBtn.addEventListener("click", () => {
